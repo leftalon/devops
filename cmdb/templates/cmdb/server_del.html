@@ -1,0 +1,150 @@
+{% extends "base_body.html" %}
+{% block js %}
+<script type="text/javascript">
+
+function block_toggle_show(name){
+   if($("#clickAll").is(":checked"))
+           {
+            $("input[name='check_box']").each(function() {
+                $(this).prop("checked", true);
+                });
+            }
+            else
+            {
+            $("input[name='check_box']").each(function() {
+  $(this).prop("checked", false);
+  });
+}
+}
+
+
+//定义全局函数
+window.block_toggle_show = block_toggle_show;
+//初始化调用
+
+</script>
+{% endblock %}
+{% block body %}
+    <form class="form-horizontal" role="form" method="get">
+            <div class="col-md-10">
+                <div class="form-group">
+                    <label for="inputserver_id" class="col-md-2 control-label">选择查询字段</label>
+                    <div class="col-md-3">
+                        <select name="server_field" class="form-control" id="inputserver_field">
+                            <option>{{server_field}}</option>
+                            {% for field,value in variable_db.items %}
+                                {% if field != server_field %}
+                                <option>{{field}}</option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <input class="form-control" type="text" name="many_message" value="{{check_content}}">
+                    </div>
+                    <div class="col-md-1">
+                        <button type="submit" class="btn btn-info">查询</button>
+                    </div>
+                </div>
+            </div>
+            {% if message %}
+                <div class="col-md-10">
+                    {% for m_s in message %}
+                    <h4>{{m_s}}</h4>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="col-md-10">
+                    <div class="form-group">
+                        <div class="table-responsive">
+			                <table class="table table-striped table-bordered table-condensed">
+                                <td><input type="checkbox" name="all" id="clickAll" onchange='window.block_toggle_show()' />选项</td>
+                                <td align="center">服务器标示</td>
+                                <td align="center">内网IP</td>
+                                <td align="center">外网IP</td>
+                                <td align="center">主机类型</td>
+                                <td align="center">型号</td>
+                                <td align="center">CPU</td>
+                                <td align="center">内存</td>
+                                <td align="center">磁盘</td>
+                                <td align="center">机房</td>
+                                <td align="center">管理员</td>
+                                <td align="center">公司</td>
+                                <td align="center">项目</td>
+                                <td align="center">状态</td>
+                                <tr>
+                                {% for items in check_server %}
+                                <td><label><input type="checkbox" name="check_box" value={{items.id}}></label></td>
+                                <td align="center">{{items.server_id}}</td>
+                                <td align="center">
+                                    {% if items.server_in_ip %}
+                                    {{items.server_in_ip}}
+                                    {% else %}
+                                    None
+                                    {% endif %}
+                                </td>
+                                <td align="center">
+                                    {% if items.server_out_ip %}
+                                    {{items.server_out_ip}}
+                                    {% else %}
+                                    None
+                                    {% endif %}
+                                </td>
+                                <td align="center">{{items.server_type}}</td>
+                                <td align="center">{{items.server_model}}</td>
+                                <td align="center">{{items.server_cpu}}</td>
+                                <td align="center">{{items.server_mem}}</td>
+                                <td align="center">{{items.server_disk}}</td>
+                                <td align="center">{{items.server_idc}}</td>
+                                {% for admin in object_admin %}
+                                {% if admin.game_name == items.server_product %}
+                                <td align="center">{{admin.user_name}}</td>
+                                {% endif %}
+                                {% endfor %}
+                                <td align="center">{{items.server_company}}</td>
+                                <td align="center">{{items.server_product}}</td>
+                                {% if items.server_status == 'Line_On' %}
+                                <td align="center"><font color="green">on</font></td>
+                                {% elif items.server_status == 'Line_Ready' %}
+                                <td align="center"><font color="blue">ready</font></td>
+                                {% elif items.server_status == 'Line_Off' %}
+                                <td align="center"><font color="red">off</font></td>
+                                {% else %}
+                                <td align="center"><font color="red">test</font></td>
+                                {% endif %}
+                                 <tr>
+                                {%endfor%}
+                            </table>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-danger">delete</button>
+                <div class="btn-group">
+                {% if page_num == "all" %}
+                <button name="page" type="submit" class="btn btn-info" value="all">all</button>
+                {% else %}
+                <button name="page" type="submit" class="btn btn-default" value="all">all</button>
+                {% endif %}
+                {% if first_page %}
+                <button name="page" type="submit" class="btn btn-default" value="1">首页</button>
+                {% endif %}
+                {% if page_up %}
+                <button name="page" type="submit" class="btn btn-default" value="{{page_num|add:-1}}">上一页</button>
+                {% endif %}
+                {% for page in page_list %}
+                {% if page == page_num %}
+                <button name="page" type="submit" class="btn btn-info" value="{{page}}">{{page}}</button>
+                {% else %}
+                <button name="page" type="submit" class="btn btn-default" value="{{page}}">{{page}}</button>
+                {% endif %}
+                {% endfor %}
+                {% if page_next %}
+                <button name="page" type="submit" class="btn btn-default" value="{{page_num|add:1}}">下一页</button>
+                {% endif %}
+                {% if last_page %}
+                <button name="page" type="submit" class="btn btn-default" value="{{last_page_value}}">尾页</button>
+                {% endif %}
+                </div>
+        </div>
+        {% endif %}
+    </form>
+{% endblock %}

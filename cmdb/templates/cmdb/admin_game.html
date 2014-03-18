@@ -1,0 +1,45 @@
+{% extends "base_body.html" %}
+{% block body %}
+<form class="form-horizontal" role="form" method="post">
+    {% csrf_token %}
+    <div class="col-md-10">
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered table-condensed">
+            <td align="center">负责人</td>
+            <td align="center">负责人电话</td>
+            <td align="center">项目</td>
+            <td align="center">运维模式</td>
+            <td align="center">运营负责人</td>
+            <td align="center">运营负责人电话</td>
+            <td align="center">机器</td>
+            <tr>
+            {% for name,information in all_information.items %}
+            <td align="center" rowspan="{{information|length}}" style="vertical-align:middle">{{name}}</td>
+            {% if information|length > 1 %}
+            <td align="center" rowspan="{{information|length}}" style="vertical-align:middle">{{information.0.0}}</td>
+            {% for m in information %}
+            <td align="center">{{m.1}}</td>
+            <td align="center">{{m.2}}</td>
+            <td align="center">{{m.3}}</td>
+            <td align="center">{{m.4}}</td>
+            <td align="center"><a href='/cmdb/server_product={{m.1}}'>{{m.5}}</a></td>
+            <tr>
+            {% endfor %}
+            {% else %}
+            {% for m in information %}
+            <td align="center">{{m.0}}</td>
+            <td align="center">{{m.1}}</td>
+            <td align="center">{{m.2}}</td>
+            <td align="center">{{m.3}}</td>
+            <td align="center">{{m.4}}</td>
+            <td align="center"><a href='/cmdb/server_product={{m.1}}'>{{m.5}}</a></td>
+            <tr>
+            {% endfor %}
+            {% endif %}
+            {% endfor %}
+            </table>
+        </div>
+    </div>
+</form>
+{% endblock %}
+

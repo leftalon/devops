@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% block css %}
+<style type="text/css">
+	ul{list-style-type:none;
+	   margin:10px;
+       padding:0px;	
+	   line-height:10px;	
+	}
+	li{list-style-type:none;
+	   margin:10px;
+       padding:0px;
+	   line-height:15px;	
+	}
+</style>
+{% endblock %}
+{% block body_left %}
+        <div class="row">
+            <div class="col-md-2">
+                <div class="well">
+                   <h4><a href='/cmdb/direction'>CMDB系统使用说明</a></h4>
+                   <h4>服务器列表管理</h4>
+                        <li><a href="#" data-toggle="collapse" data-target="#demo"><h5><font color="black">所有服务器</font></h5></a></li>
+                        <div id="demo" class="collapse">
+                            <li><a href='/cmdb/'>所有服务器</a></li>
+                        </div>
+                        <li><a href="#" data-toggle="collapse" data-target="#demo1"><h5><font color="black">游戏分组</font></h5></a></li>
+                        <div id="demo1" class="collapse">
+                            <li><h5>手机游戏</h5></li>
+                            {% for gamename in all_gamename %}
+                            {% if "手游" in gamename.game_name %}
+                            <li><a href='/cmdb/server_product={{gamename}}'>{{gamename}}</a></li>
+                            {% endif %}
+                            {% endfor %}
+                            <li><h5>网页游戏</h5></li>
+                            {% for gamename in all_gamename %}
+                            {% if "页游" in gamename.game_name %}
+                            <li><a href='/cmdb/server_product={{gamename}}'>{{gamename}}</a></li>
+                            {% endif %}
+                            {% endfor %}
+                            <li><h5>其他</h5></li>
+                            {% for gamename in all_gamename %}
+                            {% if "页游" not in gamename.game_name %}
+                            {% if "手游" not in gamename.game_name %}
+                            <li><a href='/cmdb/server_product={{gamename}}'>{{gamename}}</a></li>
+                            {% endif %}
+                            {% endif %}
+                            {% endfor %}
+
+                        </div>
+                        <li><a href="#" data-toggle="collapse" data-target="#demo3"><h5><font color="black">地域分组</font></h5></a></li>
+                            <div id="demo3" class="collapse">
+                            {% for idc in all_idc %}
+                            <li><a href='/cmdb/server_idc={{idc}}'>{{idc}}</a></li>
+                            {% endfor %}
+                        </div>
+                        <li><a href="#" data-toggle="collapse" data-target="#demo4"><h5><font color="black">主机类型分组</font></h5></a></li>
+                            <div id="demo4" class="collapse">
+                            {% for servertype in all_servertype %}
+                                <li><a href='/cmdb/server_type={{servertype}}'>{{servertype}}</a></li>
+                                {% endfor %}
+                            </div>
+                        <li><a href="#"><h5><font color="black">项目联系人</font></h5></a></li>
+                            <div>
+                                <li><a href='/cmdb/admin_game'>游戏联系人对应表</a></li>
+                            </div>
+                            <div>
+                                <li><a href='/cmdb/yunweizhiban'>一线运维值班表</a></li>
+                            </div>
+                    <h4>服务器模板管理</h4>
+                       <li><a href='/cmdb/template_show'>模板展示</a></li>
+                       <li><a href='/cmdb/template_add'>模板添加</a></li>
+                    <h4>服务器add/del管理</h4>
+                       <li><a href='/cmdb/server_add'>单台添加</a></li>
+                       <li><a href='/cmdb/server_many_add'>批量添加</a></li>
+                       <li><a href='/cmdb/server_del'>批量删除</a></li>
+                    <h4>IDC列表管理</h4>
+                        <li><a href='/cmdb/idc_all'>IDC列表</a></li>
+                        <li><a href='/cmdb/idc_add'>添加IDC</a></li>
+                    <h4>游戏列表管理</h4>
+                        <li><a href='/cmdb/game_all'>游戏列表</a></li>
+                        <li><a href='/cmdb/game_add'>添加游戏</a></li>
+                    <h4>组用户管理</h4>
+                        <li><a href='/cmdb/user_all'>组/用户列表</a></li>
+                        <li><a href='/cmdb/user_add'>添加用户</a></li>
+                        <li><a href='/cmdb/permission_builder'>权限生成表</a></li>
+                    {% if user.is_staff %}
+                        <li><a href='/cmdb/reset_password'>重置用户密码</a></li>
+                    {% endif %}
+            </div>
+        </div>
+        {% endblock %}

@@ -1,0 +1,173 @@
+{% extends "base_body.html" %}
+{% block body %}
+    <form class="form-horizontal" role="form" method="post">
+    {% csrf_token %}
+    {% if message %}
+    <div class="col-md-10">
+        <font color='red'>{{message}}</font>
+    </div>
+    {% endif %}
+    <div class="col-md-10">
+        <div class="form-group">
+        <label for="inputgama_type" class="col-md-2 control-label">游戏平台</label>
+            <div class="col-md-4">
+                <select type="text" name="game_type" class="form-control" id="inputgame_type" >
+                {% for game_type in game_type_name %}
+                <option>{{game_type.game_type_name}}</option>
+                {% endfor %}
+            </select>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-10">
+        <div class="form-group">
+            <label for="inputgama_name" class="col-md-2 control-label"><font color="red">*</font>游戏名称</label>
+            <div class="col-md-4">
+                <input type="text" name="game_name" class="form-control" id="inputgame_name" value="{{game_name}}">
+            </div>
+        </div>
+    </div>
+    <div class="col-md-10">
+        <div class="form-group">
+        <label for="inputgama_appid" class="col-md-2 control-label">Appid</label>
+            <div class="col-md-4">
+                <input type="text" name="game_appid" class="form-control" id="inputgame_appid" value="{{game_appid}}">
+            </div>
+        </div>
+    </div>
+    <div class="col-md-10">
+        <div class="form-group">
+        <label for="inputoper_models" class="col-md-2 control-label">运维模式</label>
+            <div class="col-md-4">
+                <select name="oper_models" class="form-control" id="inputoper_models">
+                    {% if oper_model %}
+                    <option>{{oper_model}}</option>
+                    {% for model in oper_models %}
+                    {% if model != oper_model %}
+                    <option>{{model}}</option>
+                    {% endif %}
+                    {% endfor %}
+                    {% else %}
+                    {% for model in oper_models %}
+                    <option>{{model}}</option>
+                    {% endfor %}
+                    {% endif %}
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-10">
+        <div class="form-group">
+        <label for="inputuser_name" class="col-md-2 control-label">运维负责人</label>
+            <div class="col-md-4">
+                <input type="text" name="user_name" class="form-control" id="inputuser_name" value="{{user_name}}">
+            </div>
+        </div>
+    </div>
+    <div class="col-md-10">
+        <div class="form-group">
+        <label for="inputuser_phone" class="col-md-2 control-label">运维负责人电话</label>
+            <div class="col-md-4">
+                <input type="text" name="user_phone" class="form-control" id="inputuser_phone" value="{{user_phone}}">
+            </div>
+        </div>
+    </div>
+    <div class="col-md-10">
+        <div class="form-group">
+        <label for="inputyunying_name" class="col-md-2 control-label">第一运营负责人</label>
+            <div class="col-md-4">
+                <input type="text" name="yunying_name" class="form-control" id="inputyunying_name" value="{{yunying_name}}">
+            </div>
+        </div>
+    </div>
+    <div class="col-md-10">
+        <div class="form-group">
+        <label for="inputyunying_phone" class="col-md-2 control-label">第一运营负责人电话</label>
+            <div class="col-md-4">
+                <input type="text" name="yunying_phone" class="form-control" id="inputyunying_phone" value="{{yunying_phone}}">
+            </div>
+        </div>
+    </div>
+    <div class="col-md-10">
+        <div class="form-group">
+        <label for="inputbackupyunying_name" class="col-md-2 control-label">第二运营负责人</label>
+            <div class="col-md-4">
+                <input type="text" name="backupyunying_name" class="form-control" id="inputbackupyunying_name" value="{{backup_yunying_name}}">
+            </div>
+        </div>
+    </div>
+    <div class="col-md-10">
+        <div class="form-group">
+        <label for="inputbackupyunying_phone" class="col-md-2 control-label">第二运营负责人电话</label>
+            <div class="col-md-4">
+                <input type="text" name="backupyunying_phone" class="form-control" id="inputbackupyunying_phone" value="{{backup_yunying_phone}}">
+            </div>
+        </div>
+    </div>
+    <div class="col-md-10">
+        <div class="form-group">
+        <label for="inputdeveloper_name" class="col-md-2 control-label">第一项目负责人</label>
+            <div class="col-md-4">
+                <input type="text" name="developer_name" class="form-control" id="inputdeveloper_name" value="{{developer_name}}">
+            </div>
+        </div>
+    </div>
+    <div class="col-md-10">
+        <div class="form-group">
+        <label for="inputdeveloper_phone" class="col-md-2 control-label">第一项目负责人电话</label>
+            <div class="col-md-4">
+                <input type="text" name="developer_phone" class="form-control" id="inputdeveloper_phone" value="{{developer_phone}}">
+            </div>
+        </div>
+    </div>
+    <div class="col-md-10">
+        <div class="form-group">
+        <label for="inputbackupdeveloper_name" class="col-md-2 control-label">第二项目负责人</label>
+            <div class="col-md-4">
+                <input type="text" name="backup_developer_name" class="form-control" id="inputbackupdeveloper_name" value="{{backup_developer_name}}">
+            </div>
+        </div>
+    </div>
+    <div class="col-md-10">
+        <div class="form-group">
+        <label for="inputbackupdeveloper_phone" class="col-md-2 control-label">第二项目负责人电话</label>
+            <div class="col-md-4">
+                <input type="text" name="backup_developer_phone" class="form-control" id="inputbackupdeveloper_phone" value="{{backup_developer_phone}}">
+            </div>
+        </div>
+    </div>
+    <div class="col-md-10">
+        <div class="form-group">
+        <label for="inputgama_line" class="col-md-2 control-label">游戏状态</label>
+            <div class="col-md-4">
+                <select name="game_line" class="form-control" id="inputgame_line">
+		    {% if game_line %}
+		    <option>{{game_line}}</option>
+                    {% for g_status in game_line_status %}
+                    {% if g_status != game_line %}
+                    <option>{{g_status}}</option>
+                    {% endif %}
+                    {% endfor %}
+		    {% else %}
+		    {% for g_status in game_line_status %}
+                    <option>{{g_status}}</option>
+                    {% endfor %}
+		    {% endif %}
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-10">
+        <div class="form-group">
+            <div class="col-md-4"></div>
+                <div class="col-md-1">
+                    <a class="btn btn-danger" href='/cmdb/game_all/'>取消</a>
+                </div>
+                <div class="col-md-1">
+                    <button type="submit" class="btn btn-primary">添加</button>
+                </div>
+            </div>
+        </div>
+    </form>
+{% endblock %}
+

@@ -1,0 +1,50 @@
+{% extends "base_body.html" %}
+{% block body %}
+    <form class="form-horizontal" role="form" method="post">
+        {% csrf_token %}
+        {% if message %}
+            <div class = "col-md-10">
+                <strong><font color="red">{{message}}</font></strong>
+            </div>
+            {% endif %}
+    <div class="col-md-10">
+        <div class="form-group">
+        <label for="inputzhiban_day" class="col-md-2 control-label">值班日期</label>
+            <div class="col-md-4">
+            <select name="zhiban_day" class="form-control" id="inputzhiban_day">
+                <option>{{yunweizhiban.zhiban_day}}</option>
+            </select>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-10">
+        <div class="form-group">
+        <label for="inputbaiban_name" class="col-md-2 control-label">白班值班人员</label>
+            <div class="col-md-4">
+            <input type="text" name="baiban_name" class="form-control" id="inputbaiban_name" value="{{yunweizhiban.baiban_name}}">
+            </div>
+        </div>
+    </div>
+    <div class="col-md-10">
+        <div class="form-group">
+        <label for="inputyeban_name" class="col-md-2 control-label">夜班值班人员</label>
+            <div class="col-md-4">
+                <input type="text" name="yeban_name" class="form-control" id="inputyeban_name" value="{{yunweizhiban.yeban_name}}">
+            </select>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-10">
+        <div class="form-group">
+            <div class="col-md-4"></div>
+            <div class="col-md-1">
+                <a class="btn btn-danger" href='/cmdb/yunweizhiban'>取消</a>
+            </div>
+            <div class="col-md-1">
+                    <button type="submit" class="btn btn-primary">保存</button>
+            </div>
+        </div>
+    </div>
+</div>
+</form>
+{% endblock %}

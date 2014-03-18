@@ -1,0 +1,75 @@
+{% extends "base_body.html" %}
+{% block body %}
+    <form class="form-horizontal" role="form" method="post">
+        {% csrf_token %}
+        {% if message %}
+            <div class = "col-md-10">
+                <strong><font color="red">{{message}}</font></strong>
+            </div>
+        {% endif %}
+    <div class="col-md-10">
+        <div class="form-group">
+            <label for="inputtemplate_name" class="col-md-2 control-label"><font color="red">*</font>模板名称</label>
+            <div class="col-md-4">
+                <input type="text" name="template_name" class="form-control" id="inputemplate_name" value="{{template_name}}">
+            </div>
+            <div class="col-md-4">
+                模板名称定义保存后不可更改
+            </div>
+        </div>
+    </div>
+    <div class="col-md-10">
+        <div class="form-group">
+        <label for="inputtemplate_model" class="col-md-2 control-label">服务器型号</label>
+            <div class="col-md-4">
+                <input type="text" name="template_model" class="form-control" id="inputtemplate_model" value="{{template_model}}">
+            </div>
+        </div>
+    </div>
+    <div class="col-md-10">
+        <div class="form-group">
+        <label for="inputtemplate_cpu" class="col-md-2 control-label">服务器cpu</label>
+            <div class="col-md-4">
+                <input type="text" name="template_cpu" class="form-control" id="inputtemplate_cpu" value="{{template_cpu}}">
+            </div>
+        </div>
+    </div>
+    <div class="col-md-10">
+        <div class="form-group">
+        <label for="inputtemplate_mem" class="col-md-2 control-label">服务器内存</label>
+            <div class="col-md-4">
+                <input type="text" name="template_mem" class="form-control" id="inputtemplate_mem" value="{{template_mem}}">
+            </div>
+        </div>
+    </div>
+    <div class="col-md-10">
+        <div class="form-group">
+        <label for="inputtemplate_disk" class="col-md-2 control-label">服务器磁盘</label>
+            <div class="col-md-4">
+                <input type="text" name="template_disk" class="form-control" id="inputtemplate_disk" value="{{template_disk}}">
+            </div>
+        </div>
+    </div>
+    <div class="col-md-10">
+        <div class="form-group">
+        <label for="inputtemplate_money" class="col-md-2 control-label">模板价格(元/天)</label>
+            <div class="col-md-4">
+                <input type="text" name="template_money" class="form-control" id="inputtemplate_money" value="{{template_money}}">
+            </div>
+        </div>
+    </div>
+    <div class="col-md-10">
+        <div class="form-group">
+            <div class="col-md-4"></div>
+            <div class="col-md-1">
+                <a class="btn btn-danger" href='/cmdb/template_show'>取消</a>
+            </div>
+            <div class="col-md-1">
+                    <button type="submit" class="btn btn-primary">添加</button>
+            </div>
+        </div>
+    </div>
+</div>
+</form>
+{% endblock %}
+

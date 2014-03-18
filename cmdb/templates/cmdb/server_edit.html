@@ -1,0 +1,149 @@
+{% extends "base_body.html" %}
+{% block body %}
+    <form class="form-horizontal" role="form" method="post">
+        {% csrf_token %}
+        {% if message %}
+            <div class = "col-md-10">
+                <strong><font color="red">{{message}}</font></strong>
+            </div>
+            {% endif %}
+    <div class="col-md-10">
+        <div class="form-group">
+        <label for="inputserver_id" class="col-md-3 control-label">服务器标示</label>
+            <div class="col-md-4">
+                <input type="text" name="server_id" class="form-control" id="inputserver_id" value="{{s_edit.server_id}}">
+            </div>
+        </div>
+    </div>
+    <div class="col-md-10">
+        <div class="form-group">
+        <label for="inputserver_in_ip" class="col-md-3 control-label">内网ip地址</label>
+        <div class="col-md-4">
+                <input type="text" name="server_in_ip" class="form-control" id="inputserver_in_ip" value="{{s_edit.server_in_ip}}">
+            </div>
+        </div>
+    </div>
+    <div class="col-md-10">
+        <div class="form-group">
+        <label for="inputserver_out_ip" class="col-md-3 control-label">外网ip地址</label>
+        <div class="col-md-4">
+                <input type="text" name="server_out_ip" class="form-control" id="inputserver_out_ip" value="{{s_edit.server_out_ip}}">
+            </div>
+        </div>
+    </div>
+    <div class="col-md-10">
+        <div class="form-group">
+            <label for="inputserver_type" class="col-md-3 control-label">主机类型</label>
+            <div class="col-md-4">
+                <select name="server_type" class="form-control" id="inputserver_type">
+		    <option>{{s_edit.server_type}}</option>
+                    {% for s_type in typeall %}
+                    {% if s_type != s_edit.server_type %}
+                    <option>{{s_type}}</option>
+                    {% endif %}
+                    {%endfor%}
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-10">
+        <div class="form-group">
+        <label for="inputserver_template" class="col-md-3 control-label">服务器模板</label>
+            <div class="col-md-4">
+                <select name="server_template" class="form-control" id="inputserver_template">
+                    {% for template_name,v in server_template_dict.items %}
+                    {% if template_name == s_edit.server_template_id %}
+                    <option>{{v.0}}({{v.1}},{{v.2}},{{v.3}},{{v.4}})</option>
+                    {% endif %}
+                    {% endfor %}
+                    {% for template in templateall %}
+                    <option>{{template}}({{template.template_model}},{{template.template_cpu}},{{template.template_mem}},{{template.template_disk}})</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-10">
+        <div class="form-group">
+        <label for="inputserver_idc" class="col-md-3 control-label">服务器IDC</label>
+            <div class="col-md-4">
+                <select name="server_idc" class="form-control" id="inputserver_idc">
+                    <option>{{s_edit.server_idc}}</option>
+                    {% for idc_name in idcall %}
+                    {% if idc_name != s_edit.server_idc %}
+                    <option>{{idc_name}}</option>
+                    {% endif %}
+                    {%endfor%}
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-10">
+        <div class="form-group">
+            <label for="inputserver_company" class="col-md-3 control-label">服务器所属公司</label>
+            <div class="col-md-4">
+                <select name="server_company" class="form-control" id="inputserver_company">
+                    <option>{{s_edit.server_company}}</option>
+                    {% for platform in companyall %}
+                    {% if platform != s_edit.server_company %}
+                    <option>{{platform}}</option>
+                    {% endif %}
+                    {%endfor%}
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-10">
+        <div class="form-group">
+        <label for="inputserver_status" class="col-md-3 control-label">服务器状态</label>
+            <div class="col-md-4">
+                <select name="server_status" class="form-control" id="inputserver_status">
+                    <option>{{s_edit.server_status}}</option>
+                    {% for s_status in server_line_status %}
+                        {% if s_status != s_edit.server_status %}
+                            <option>{{s_status}}</option>
+                        {% endif %}
+                    {%endfor%}
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-10">
+        <div class="form-group">
+        <label for="inputserver_start_date" class="col-md-3 control-label">开始时间(格式:2013-01-01)</label>
+            <div class="col-md-4">
+                <input type="text" name="server_start_date" class="form-control" id="inputserver_start_date" value={{s_edit.server_start_date}}>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-10">
+        <div class="form-group">
+        <label for="inputserver_end_date" class="col-md-3 control-label">结束时间(格式:2013-01-01)</label>
+            <div class="col-md-4">
+                {% if s_edit.server_end_date %}
+                <input type="text" name="server_end_date" class="form-control" id="inputserver_end_date" value={{s_edit.server_end_date}}>
+                {% else %}
+                <input type="text" name="server_end_date" class="form-control" id="inputserver_end_date" value="">
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-10">
+        <div class="form-group">
+            <div class="col-md-4"></div>
+            <div class="col-md-1">
+                <a class="btn btn-danger" href='/cmdb/server_product={{s_edit.server_product}}'>取消</a>
+            </div>
+            <div class="col-md-1">
+                    <button type="submit" class="btn btn-primary">保存</button>
+            </div>
+        </div>
+    </div>
+</div>
+</form>
+{% endblock %}
+

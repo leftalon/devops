@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <link href="/static/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+        <script type="text/javascript" src="/static/bootstrap/js/jquery.js"></script>
+        <script type="text/javascript" src="/static/bootstrap/js/tooltip.js"></script>
+        <script type="text/javascript" src="/static/bootstrap/js/popover.js"></script>
+        <script type="text/javascript" src="/static/bootstrap/js/collapse.js"></script>
+        <script type="text/javascript" src="/static/bootstrap/js/transition.js"></script>
+        <script type="text/javascript" src="/static/bootstrap/js/bootstrap.js"></script>
+	<!-- Extras CSS -->
+  	<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+  	<!--[if lt IE 9]>
+    	<script src="/static/bpptstrap/js/html5shiv.js"></script>
+    	<script src="/static/bpptstrap/js/respond.min.js"></script>
+  	<![endif]-->
+  	<!-- Favicons -->
+        <title>cmdb</title>
+        <div class="row">
+            <header class="navbar navbar-inverse navbar-fixed-top-meu bs-docs-nav" role="banner">
+            <div class="container">
+                {% if user.is_authenticated %}
+                <div class="col-md-5">
+                    <div class="col-md-6">
+                        <a class="navbar"><font color="white">欢迎用户{{user}}</font></a>
+                    </div>
+                    <div class="col-md-3">
+                        <a class="navbar" href="/logout"><font color="white">退出</font></a>
+                    </div>
+                    <div class="col-md-3">
+                        <a class="navbar" href="/cmdb/change_passwd"><font color="white">修改密码</font></a>
+                    </div>
+                </div>
+                {% else %}
+                <a class="navbar-right" href="/login">登录</a>
+                {%endif%}
+            </div>
+            </header>
+        </div>
+            {% block css %}
+            {% endblock %}
+            {% block js %}
+            {% endblock %}
+    </head>
+    {% block body_left %}
+    {% endblock %}
+    {% block body %}
+    {% endblock %}
+</html>

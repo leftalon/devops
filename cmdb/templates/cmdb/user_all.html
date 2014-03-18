@@ -1,0 +1,21 @@
+{% extends "base_body.html" %}
+{% block body %}
+<div class="col-md-10">
+    <div class="col-md-8">
+            <div class="table-responsive">
+                <table class="table table-bordered table-condensed">
+                    <td align="center"><a>组名称</a></td>
+                    <td align="center"><a>用户名</a></td>
+                    <tr>
+                    {% for k,v in group_user.items %}
+                    <td align="center" rowspan="{{v|length}}" style="vertical-align:middle">{{k}}({{v|length}}人)</td>
+                    {% for user in v %}
+                    <td align="center">{{user}}</td>
+                    <tr>
+                    {% endfor %}
+                    <tr>
+                    {%endfor%}
+                </table>
+            </div>
+    </div>
+{% endblock %} 

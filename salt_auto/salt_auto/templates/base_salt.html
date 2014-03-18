@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <link href="/static/bootstrap/css/bootstrap.css" rel="stylesheet">
+        <link rel="stylesheet" href="/static/bootstrap/css/blue/style.css">
+        <script type="text/javascript" src="/static/bootstrap/js/jquery.js"></script>
+        <script type="text/javascript" src="/static/bootstrap/js/dropdown.js"></script>
+        <script type="text/javascript" src="/static/bootstrap/js/tooltip.js"></script>
+        <script type="text/javascript" src="/static/bootstrap/js/popover.js"></script>
+        <script type="text/javascript" src="/static/bootstrap/js/transition.js"></script>
+        <script type="text/javascript" src="/static/bootstrap/js/tab.js"></script>
+        <script type="text/javascript" src="/static/bootstrap/js/jquery.tablesorter.js"></script>
+        <script type="text/javascript" src="/static/bootstrap/js/bootstrap.js"></script>
+	<!-- Extras CSS -->
+  	<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+  	<!--[if lt IE 9]>
+    	<script src="/static/bootstrap/js/html5shiv.js"></script>
+    	<script src="/static/bootstrap/js/respond.min.js"></script>
+  	<![endif]-->
+  	<!-- Favicons -->
+        <title>cmdb</title>
+        <div class="row">
+            <div class="navbar navbar-inverse" role="banner">
+                <div class="col-md-3">
+                    <a class="navbar-brand"> SALTSTACK</a>
+                </div>
+            </div>
+        </div>
+            {% block css %}
+            {% endblock %}
+            {% block js %}
+            {% endblock %}
+    </head>
+    {% block body %}
+    {% endblock %}
+</html>

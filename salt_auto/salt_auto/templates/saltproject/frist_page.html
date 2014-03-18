@@ -1,0 +1,79 @@
+{% extends "base_salt.html" %}
+{% block js %}
+<script type="text/javascript" src="/static/bootstrap/js/jqplot/dist/jquery.jqplot.min.js"></script>
+<script type="text/javascript" src="/static/bootstrap/js/jqplot/dist/plugins/jqplot.pieRenderer.min.js"></script>
+<script type="text/javascript" src="/static/bootstrap/js/jqplot/dist//plugins/jqplot.donutRenderer.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+  var data = [['Heavy Industry', 12],['Retail', 9], ['Light Industry', 14], ['Out of home', 16],['Commuting', 7], ['Orientation', 9]];
+  var plot1 = jQuery.jqplot ('chart1', [data], 
+  { 
+      seriesDefaults: {
+          // Make this a pie chart.
+          renderer: jQuery.jqplot.PieRenderer, 
+          rendererOptions: {
+              // Put data labels on the pie slices.
+              // By default, labels show the percentage of the slice.
+              showDataLabels: true
+          }
+      },
+      legend: { show:true, location: 'e' }
+      });
+  });
+</script>
+{% endblock %}
+{% block body %}
+<ul class="nav nav-tabs">
+    <li class="active">
+    <a href="#command" data-toggle="tab">Command</a>
+    </li>
+    <li>
+    <a href="#minion" data-toggle="tab">Minion</a>
+    </li>
+</ul>
+<br>
+<div class="tab-content">
+    <div class="tab-pane fade active in" id="command">
+        <p>
+        <h4>Command View</h4>
+        </p>
+        <form class="form-inline" role="form" method="POST">
+            {% csrf_token %}
+            <div class="row">
+            <div class="form-group">
+                <input type="text" name="saltid" class="form-control" value="{{saltid}}">
+            </div>
+            <div class="form-group">
+                <input type="text" name="hostmsg" class="form-control"  value="{{hostmsg}}">
+            </div>
+            <div class="form-group">
+                <input type="text" name="arg1" class="form-control" value="{{arg1}}">
+            </div>
+            <div class="form-group">
+                <input type="text" name="arg2" class="form-control" value="{{arg2}}">
+            </div>
+            <button type="submit" class="btn btn-primary">Execute</button>
+            </div>
+            <br>
+            <h4>Result</h4>
+            <div class="row">
+            {% if result %}
+            {% for k,v in result.items %}
+            <ul>
+                <li><h5><font color="#58FA58">{{k}}</font></h5></li>
+                {{v}}
+            </ul>
+            {% endfor %}
+            {% endif %}
+            </div>
+        </form>
+    </div>
+    <div class="tab-pane fade active" id="minion">
+        <div class="row">
+            <div class="col-md-5">
+                <div id="chart1"></div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

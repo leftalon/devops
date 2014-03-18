@@ -1,0 +1,23 @@
+{% extends "base_body.html" %}
+{% block body %}
+    <form class="form-horizontal" role="form" method="post">
+    {% csrf_token %}
+    <div class="col-md-10">
+        <div class="form-group">
+            <textarea class="form-control" name="many_per" rows="25">
+{% for p in user_permission_list %}
+{{p.0}}:{{p.1}};
+{% endfor %}
+            </textarea>
+        </div>
+    </div>
+    <div class="col-md-10">
+        <div class="form-group">
+            <div class="col-md-1">
+                <button type="submit" class="btn btn-primary">更新</button>
+            </div>
+        </div>
+    </div>
+</form>
+{% endblock %}
+
