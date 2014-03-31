@@ -1,0 +1,68 @@
+{% extends "base_puppet.html" %}
+{% block puppet_body %}
+<form class="form-horizontal" role="form" method="post">
+    {% csrf_token %}
+    <div class="row">
+        <div class="form-group">
+            <label for="inputnode_name" class="col-md-2 control-label"><font color="red">*</font>Node pp name</label>
+            <div class="col-md-4">
+                <input type="text" name="node_name" class="form-control" id="inputnode_name" value="{{node_name}}">
+            </div>
+            {% if message %}
+            <div class="col-md-4">
+                <label for="inputserver_id" class="control-label"><font color="red">{{message}}</font></label>
+            </div>
+            {% else %}
+            <div class="col-md-4">
+                <label class="control-label">注:(ctc.bj.zx.game.example.com)</label>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    <div class="row">
+        <div class="form-group">
+            <label for="inputserver_message" class="col-md-2 control-label">机器信息</label>
+            <div class="col-md-4">
+                    <select name="server_message" class="form-control" id="inputserver_message">
+                        {% if server_message %}
+                        <option>{{ server_message }}</option>
+                        {% for server in server_all %}
+                        {% if server.server_id != server_message %}
+                        <option>{{server.server_id}}</option>
+                        {% endif %}
+                        {% endfor %}
+                        {% else %}
+                        {% for server in server_all %}
+                        {% if server.server_id != server_message %}
+                        <option>{{server.server_id}}</option>
+                        {% endif %}
+                        {% endfor %}
+                        {% endif %}
+                    </select>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="form-group">
+            <div class="col-md-4"></div>
+            <div class="col-md-1">
+                <a class="btn btn-danger" href='/puppet/'>取消</a>
+            </div>
+            <div class="col-md-1">
+                    <button type="submit" class="btn btn-primary">生成</button>
+            </div>
+        </div>
+    </div>
+    <!--
+    {% if node_config %}
+        <div class="row">
+            <div class="col-md-6">
+            <pre>
+                {{node_config|safe}}
+            </pre>
+            </div>
+        </div>
+    {% endif %}
+    -->
+</form>
+{% endblock %}

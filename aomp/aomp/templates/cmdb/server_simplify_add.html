@@ -1,0 +1,400 @@
+{% extends "base_body.html" %}
+{% block js %}
+<link type="text/css" rel="stylesheet" href="/static/bootstrap/css/calendar.css" >
+    <script type="text/javascript" src="/static/bootstrap/js/calendar.js" ></script>
+    <script type="text/javascript" src="/static/bootstrap/js/calendar-zh.js" ></script>
+    <script type="text/javascript" src="/static/bootstrap/js/calendar-setup.js"></script>
+<script>
+    function check_start_date() {
+        var start_date = document.getElementById("server_start_date").value;
+        var d = start_date.split('-');
+        var re = new RegExp("(([0-9]{3}[1-9]|[0-9]{2}[1-9][0-9]{1}|[0-9]{1}[1-9][0-9]{2}|[1-9][0-9]{3})-(((0[13578]|1[02])-(0[1-9]|[12][0-9]|3[01]))|((0[469]|11)-(0[1-9]|[12][0-9]|30))|(02-(0[1-9]|[1][0-9]|2[0-8]))))|((([0-9]{2})(0[48]|[2468][048]|[13579][26])|((0[48]|[2468][048]|[3579][26])00))-02-29)");
+        if(start_date != "") {
+            if(start_date.length != 10 || !re.test(start_date) || d.length != 3 || d[0].length != 4 || d[1].length != 2 || d[2].length != 2) { 
+                alert("开始时间不正确,请重新填写");
+                document.getElementById("server_start_date").value = "";
+            }
+        }
+    }
+
+    function checkip(f) {
+        if(f.value) {
+            var re = /^((2[0-4]\d|25[0-5]|[01]?\d\d?)\.){3}(2[0-4]\d|25[0-5]|[01]?\d\d?)(:\d{1,})?$/g;
+            if(!re.test(f.value)) {
+                alert("IP地址不正确，请重新填写");
+                f.value = "";
+            }
+        }
+    }
+
+    function update_ids() {
+        if (document.getElementById("start_server_id").value == "") {
+            return;
+        } else {
+            addServerIds();
+        }
+    }
+    function addServerIds() {
+        var value = document.getElementById("start_server_id").value;
+        var game_valid = false;
+        if(value == "") {
+            alert("请先填写服务器起始标示");
+        } else {
+            var each = value.split('.');
+            if(each.length != 2) {
+                alert("服务器起始标示格式不正确，请重新填写\n正确格式为:game.s5");
+                return;
+            }
+            var exist = false;
+            var scode = "";
+            var sel_idccompany = document.getElementById("inputidc_company").options[document.getElementById("inputidc_company").options.selectedIndex].value;
+            var sel_idc = document.getElementById("inputserver_idc").options[document.getElementById("inputserver_idc").options.selectedIndex].value;
+            if(sel_idccompany != "其他") {
+            {% for idc in idc_all_name %}
+            if("{{idc.idc_company}}" == sel_idccompany && "{{idc.idc_name}}" == sel_idc) {
+                scode = "{{idc.idc_scode}}";
+            }
+            {% endfor %}
+            } else {
+                {% for idc in idc_all_name %}
+                if("{{idc.idc_company}}" == "None" && "{{idc.idc_name}}" == sel_idc) {
+                    scode = "{{idc.idc_scode}}";
+                }
+                {% endfor %}
+            }
+            if(scode == "") {
+                scode = "No";
+            }
+            var game_string_id = "";
+            var sel = document.getElementById("inputserver_product");
+            var selproduct = sel.options[sel.options.selectedIndex].value
+            {% for game in game_dict %}
+            if("{{game}}" == selproduct) {
+                game_string_id = "{{game.game_string_id}}";
+            }
+            {% endfor %}
+            var temp_value = scode + '.' + game_string_id + '.' + value;
+            {% for one_server in distinct_server_id %}
+            if(temp_value == "{{one_server.server_id}}") {
+                exist = true;
+            }
+            {% endfor %}
+            if(exist) {
+                alert("服务器起始标示已经存在，请重新填写");
+            } else {
+                var cur_num = each[1].replace(/[^0-9]/ig,""); 
+                var len = cur_num.length
+                var start_num = 0;
+                if(cur_num == "") {
+                   start_num = 1;
+                } else {
+                   start_num = Number(cur_num);
+                }
+                document.getElementById("input_ids0").value = value;
+                for(var i=1;i<=start;i++) {
+                    var valid = false;
+                    var valid_id = '';
+                    var new_id = '';
+                    var found = false;
+                    while(!valid) {
+                        found = false;
+                        if(cur_num == "") {
+                            new_id = value.substring(0,value.length - len) + start_num;
+                        } else {
+                            new_id = value.substring(0,value.length - len) + (start_num + 1);
+                        }
+                        temp_new_id = scode + '.' + game_string_id + '.' + new_id;
+                        {% for one_server in distinct_server_id %}
+                        if(temp_new_id == "{{one_server.server_id}}") {
+                            found = true;
+                        }
+                        {% endfor %}
+                        start_num += 1;
+                        if(!found) {
+                            valid = true;
+                        }
+                    }
+                    for(var j=i;j<=start;j++) {
+                        if(document.getElementById("input_ids"+j) != null) {
+                            document.getElementById("input_ids"+j).value = new_id;
+                            i = j;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    var start=1;
+    function addRemark() {
+        if(Number(document.getElementById("count").innerHTML) == 50) {
+            alert("目前只支持一次最多支持50条记录");
+            return;
+        }
+        document.getElementById("count").innerHTML = Number(document.getElementById("count").innerHTML) + 1;
+        var box = document.getElementById("auto_id");
+        var div = document.createElement("div");
+        div.setAttribute("id", "div_id_" + start);
+        var f = document.createElement("input");
+        f.setAttribute('type','text');
+        f.setAttribute("name", "server_ids"+start);
+        f.setAttribute("id","input_ids"+start);
+        f.style.padding = "10px";
+        f.className = "form-control";
+        div.appendChild(f);
+        document.getElementById("_container1").appendChild(div);
+        f.setAttribute('onblur', 'focusFunction(this)');
+
+        var div = document.createElement("div");
+        div.setAttribute("id", "div_in_ip_" + start);
+        var f = document.createElement("input");
+        f.setAttribute('type','text');
+        f.setAttribute("name", "server_in_ips"+start);
+        f.setAttribute("id","input_in_ips"+start);
+        f.className = "form-control";
+        div.appendChild(f);
+        document.getElementById("_container2").appendChild(div);
+        f.setAttribute('onblur', 'checkip(this)');
+
+        var div = document.createElement("div");
+        div.setAttribute("id", "div_out_ip_" + start);
+        var f = document.createElement("input");
+        f.setAttribute('type','text');
+        f.setAttribute("name", "server_out_ips"+start);
+        f.setAttribute("id","input_out_ips"+start);
+        f.className = "form-control";
+        div.appendChild(f);
+        document.getElementById("_container3").appendChild(div);
+        f.setAttribute('onblur', 'checkip(this)');
+        
+        var div1 = document.createElement("div");
+        var d = document.createElement("input");
+        d.setAttribute("value", "删除");
+        d.setAttribute('id',start);
+        d.setAttribute("type", "button")
+        d.className = "btn btn-info";
+        d.onclick = function() { deteFile(this); };
+        div1.appendChild(d);
+        document.getElementById("_container4").appendChild(div1);
+        start++;
+    }
+    function deteFile(o) {
+        document.getElementById("count").innerHTML = Number(document.getElementById("count").innerHTML) - 1;
+        remove("div_id_"+o.id);
+        remove("div_in_ip_"+o.id);
+        remove("div_out_ip_"+o.id);
+        while (o.tagName != "DIV")
+        {
+            o = o.parentNode;
+        }
+        o.parentNode.removeChild(o);
+    }
+    function remove (id)
+    {
+        var idObject = document.getElementById(id);
+        if (idObject != null)
+            idObject.parentNode.removeChild(idObject);
+    }
+    function select() {
+        var company_idc_mapping = new Array();
+        {% for k,v in company_idc_dict.items %}
+            var group = new Object();
+            group.company = "{{k}}";
+            {% for each in v %}
+                if(!group.idc) {
+                    group.idc = "{{each}}";
+                } else {
+                    group.idc += "|" + "{{each}}";
+                }
+            {% endfor %}
+            company_idc_mapping.push(group);
+        {% endfor %}
+        var sel = document.getElementById("inputidc_company");
+        var selvalue = sel.options[sel.options.selectedIndex].value
+        for(var i=0;i<company_idc_mapping.length;i++) {
+            if(company_idc_mapping[i].company == selvalue) {
+                var idc_list = company_idc_mapping[i].idc.split('|');
+                for(var j=0;j<idc_list.length;j++) {
+                    document.getElementById("inputserver_idc").length = idc_list.length;
+                    document.getElementById("inputserver_idc").options[j].text = idc_list[j];
+                    document.getElementById("inputserver_idc").options[j].value = idc_list[j];
+                }
+            }
+        }
+        update_ids();
+    }
+</script>
+{% endblock %}
+{% block body %}
+<form class="form-horizontal" role="form" method="POST">
+    {% csrf_token %}
+    {% if message %}
+    <script>
+        alert("因为某些原因，如下如服务器添加失败:\n" + "{{message}}");
+    </script>
+    {% endif %}
+    <div class="col-md-1"></div>
+    <div class="col-md-1">
+                <select name="server_type" class="form-control" id="inputserver_type">
+                    {% if server_type %}
+                    <option>{{server_type}}</option>
+                    {% for s_type in typeall %}
+                    {% if s_type.server_type_name != server_type %}
+                    <option>{{s_type}}</option>
+                    {% endif %}
+                    {% endfor %}
+                    {% else %}
+                    {% for s_type in typeall %}
+                    <option>{{s_type}}</option>
+                    {% endfor %}
+                    {% endif %}
+                </select>
+    </div>
+    <div class="col-md-1">
+                <select name="server_template" class="form-control" id="inputserver_template">
+                    {% if server_template %}
+                    <option>{{server_template}}</option>
+                    {% for template in templateall %}
+                    {% if template.template_name != template_name %}
+                    <option>{{template.template_name}}</option>
+                    {% endif %}
+                    {% endfor %}
+                    {% else %}
+                    {% for template in templateall %}
+                    <option>{{template.template_name}}</option>
+                    {% endfor %}
+                    {% endif %}
+                </select>
+    </div>
+    <div class="col-md-1">
+                    <select name="idc_company" class="form-control" id="inputidc_company" onChange = select()>
+                        {% for company_name in company_list %}
+                        <option>{{company_name}}</option>
+                        {%endfor%}
+                    </select>
+    </div>
+    <div class="col-md-1">
+                    <select name="server_idc" class="form-control" id="inputserver_idc" onChange=update_ids()>
+                        {% if server_idc %}
+                        <option>{{server_idc}}</option>
+                        {% for idc in default_idc %}
+                        {% if idc != server_idc %}
+                        <option>{{idc}}</option>
+                        {% endif %}
+                        {% endfor %}
+                        {% else %}
+                        {% for idc in default_idc %}
+                        <option>{{idc}}</option>
+                        {% endfor %}
+                        {% endif %}
+                    </select>
+    </div>
+    <div class="col-md-1">
+                    <select name="server_company" class="form-control" id="inputserver_company">
+                        {% if server_company %}
+                        <option>{{server_company}}</option>
+                        {% for platform in companyall %}
+                        {% if platform.platform_name != server_company %}
+                        <option>{{platform}}</option>
+                        {% endif %}
+                        {% endfor %}
+                        {% else %}
+                        {% for platform in companyall %}
+                        <option>{{platform}}</option>
+                        {%endfor%}
+                        {% endif %}
+                    </select>
+    </div>
+    <div class="col-md-1">
+        <select name="server_product" class="form-control" id="inputserver_product" onChange=update_ids()>
+            {% for game in gameall %}
+            <option>{{game}}</option>
+            {%endfor%}
+        </select>
+    </div>
+
+    <div class="col-md-1">
+                <select name="server_status" class="form-control" id="inputserver_status">
+                    {% if server_status %}
+                    <option>{{server_status}}</option>
+                    {% for s_status in server_line_status %}
+                    {% if s_status != server_status %}
+                    <option>{{s_status}}</option>
+                    {% endif %}
+                    {% endfor %}
+                    {% else %}
+                    {% for s_status in server_line_status %}
+                    <option>{{s_status}}</option>
+                    {%endfor%}
+                    {% endif %}
+                </select>
+    </div>
+
+    <div class="col-md-1">
+        <input type="text" id="server_start_date" name="server_start_date" class="form-control" placeholder="开始时间" onclick="return showCalendar('server_start_date', 'y-mm-dd');" onblur=check_start_date()>
+    </div>
+    </script>
+    <div class="col-md-12"><br /></div>
+    <div class="col-md-1"></div>
+    <div class="col-md-1">
+        <a class="btn btn-info" onclick="addRemark()">点击添加</a>
+    </div>
+    <div class="col-md-2"><font size=4>目前有<font color="red"><span id="count" name="count">1</span></font>条记录</font></div>
+            <div class="col-md-1">
+                <a class="btn btn-info" onclick="addServerIds()">添加标示</a>
+            </div>
+            <div class="col-md-2">
+                <input type="text" name="start_server_id" class="form-control" id="start_server_id" placeholder="起始标示">
+            </div>
+    <div class="col-md-12"><br /></div>
+    <div class="col-md-12">
+        <div class="form-group">
+            <div class="col-md-1"></div>
+            <div class="col-md-3 col-md-push-1"><font size=4>服务器标示</font></div>
+            <div class="col-md-3 col-md-push-1"><font size=4>内网IP地址</font></div>
+            <div class="col-md-3 col-md-push-1"><font size=4>外网IP地址</font></div>
+            <div class="col-md-2"><font size=4>删除</font></div>
+        </div>
+    </div>
+    <div class="col-md-12">
+        <div class="form-group">
+            <div class="col-md-1"></div>
+            <div id="_container1" class="col-md-3">
+                <input type="text" name="server_ids0" id="input_ids0" class="form-control">
+            </div>
+            <div id="_container2" class="col-md-3">
+                <input type="text" name="server_in_ips0" class="form-control" onblur=checkip(this)>
+            </div>
+            <div id="_container3" class="col-md-3">
+                <input type="text" name="server_out_ips0" class="form-control" onblur=checkip(this)>
+            </div>
+            <div id="_container4" class="col-md-2">
+                <a href='#' class="btn btn-info">删除</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-12">
+        <div class="form-group">
+            <span id="empty_lines"></span>
+        </div>
+        <script>
+           var url = "";
+            for(var i=0;i<2;i++) {
+                url += "<br />"
+            }
+            document.getElementById("empty_lines").innerHTML = url;
+        </script>
+    </div>
+    <div class="col-md-12" padding-top="10%">
+        <div class="form-group">
+            <div class="col-md-5"></div>
+            <div class="col-md-1">
+                <a class="btn btn-danger" href='/cmdb/'>取消</a>
+            </div>
+            <div class="col-md-1">
+                <button type="submit" class="btn btn-primary">保存</button>
+            </div>
+        </div>
+    </div>
+</form>
+{% endblock %} 

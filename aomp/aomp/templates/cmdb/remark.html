@@ -1,0 +1,58 @@
+{% extends "base_body.html" %}
+{% block js %}
+<script>
+    function addRemark() {
+        alert("aa");
+    }
+</script>
+{% endblock %} 
+{% block body %}
+<form class="form-horizontal" role="form" method="POST">
+    {% csrf_token %}
+    <div class="col-md-10">
+        <div class="col-md-1"><font size=4>添加备注</font></div>
+        <div class="col-md-4">
+             <input type="text" name="remark" class="form-control" />
+        </div>
+        <div class="col-md-2">
+            <button type="submit" class="btn btn-primary">添加</button>
+        </div>
+        <div class="col-md-3"></div>
+        <div class="col-md-2">
+            <a href='/cmdb/yunweizhiban' class="btn btn-info">返回</a>
+        </div>
+    </div>
+    <div class="col-md-10">
+        <br />
+    </div>
+    <div class="col-md-10"><br></div>
+    <div class="col-md-10">
+        <div class="table-responsive">
+            <table class="table-striped table-bordered table-condensed" width=99%>
+                <td align="center"width=50%>备注描述</td>
+                <td align="center">添加人</td>
+                <td align="center">备注添加时间</td>
+                <td align="center">备注状态</td>
+                <td align="center">操作人</td>
+                <td align="center">修改</td>
+                <td align="center">删除</td>
+                <tr>
+                {% for remark in remarks %}
+                <td align="center" width=50%>{{remark.remark}}</td>
+                <td align="center">{{remark.author}}</td>
+                <td align="center">{{remark.add_date}}</a></td>
+                {% if remark.status == "未处理" %}
+                <td align="center"><font color="red">{{remark.status}}</font></a></td>
+                {% else %}
+                <td align="center"><font color="green">{{remark.status}}</font></a></td>
+                {% endif %}
+                <td align="center">{{remark.dealer_name}}</td>
+                <td align="center"><a href='/cmdb/remark_edit&id={{remark.id}}/'>编辑</a></td>
+                <td align="center" valign="middle"><a href='/cmdb/remark_delete&id={{remark.id}}/' onclick="return confirm('确定要删除吗?')">删除</a></td>
+                <tr>
+                {%endfor%}
+            </table>
+        </div>
+    </div>
+</form>
+{% endblock %} 

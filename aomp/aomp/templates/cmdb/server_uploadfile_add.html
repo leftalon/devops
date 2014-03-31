@@ -1,0 +1,20 @@
+{% extends "base_body.html" %}
+{% block body %}
+    <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="col-md-6">
+        {{uf.as_p}}
+        <input name="upload_file" type="submit" value="导入"> 
+    </div>
+    </form>
+    {% if mess %}
+        {% for m in mess %}
+            <div class='col-md-10'>
+            <div class='col-md-9'>
+                <font color='red'>{{m.0}} {{m.1}}</font>
+            </div>
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endblock %}
+

@@ -1,0 +1,29 @@
+{% extends "base_body.html" %}
+{% block body %}
+    <form class="form-horizontal" role="form" method="post">
+    {% csrf_token %}
+    <div class="col-md-12">
+        <div class="form-group">
+            <label for="inputserver_group" class="col-md-2 control-label"><font color="red">*</font>服务器组名称</label>
+            <div class="col-md-4">
+                <input type="text" name="server_group" class="form-control" id="inputserver_group">
+            </div>
+            <div class="col-md-4">
+                <label class="control-label"><font color="red">{{message}}</font></label>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-12">
+        <div class="form-group">
+            <div class="col-md-4"></div>
+                <div class="col-md-1">
+                    <a class="btn btn-danger" href='/cmdb/idc_all/'>取消</a>
+                </div>
+                <div class="col-md-1">
+                    <button type="submit" class="btn btn-primary">添加</button>
+                </div>
+        </div>
+    </div>
+    </form>
+{% endblock %}
+

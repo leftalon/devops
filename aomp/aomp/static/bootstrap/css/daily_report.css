@@ -1,0 +1,46 @@
+ul,li{
+    padding-bottom: 0.8em;
+    line-height: 15px;
+    list-style-type: none;
+}
+li.second {
+    list-style-type: none;
+    padding-left: 2em;
+}
+#addReport {
+    display: block;
+    font-size: 1em;
+    font-weight: bold;
+    font-family: Verdana;
+    color: #FFFFFF;
+    width: 12em;
+    background-color: #98bf21;
+    text-align: center;
+    padding: 0.5em;
+    text-decoration: none;
+}
+img {
+    padding-right: 0.5em;
+}
+#addReport:hover {
+        background-color:#7A991A;
+}
+.each {
+    background-color: WhiteSmoke;
+    padding: 0.5em;
+    border: 1px;
+    margin: 0.5em;
+}
+.title,.content {
+    padding: 1em;
+}
+#reports {
+    padding: 2em;
+}
+.button-group {
+    padding: 1em;
+}
+.comment {
+    font-weight: bold;
+    font-size: 1em;
+}

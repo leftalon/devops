@@ -1,0 +1,91 @@
+{% extends "base_body.html" %}
+{% block js %}
+<script>
+    var i=0;
+    function addRemark() {
+        var div = document.createElement("div");
+        div.setAttribute("id", "div_" + i);
+        var f = document.createElement("input");
+        f.setAttribute('type','text');
+        f.setAttribute("name", "remarks");
+        f.setAttribute("id","input_"+i);
+        f.style.width = "90%";
+        div.appendChild(f);
+        document.getElementById("_container1").appendChild(div);
+        
+        var div1 = document.createElement("div");
+        var d = document.createElement("input");
+        d.setAttribute("value", "删除");
+        d.setAttribute('id',i);
+        d.setAttribute("type", "button")
+        //d.setAttribute("class","col-md-2");
+        d.onclick = function() { deteFile(this); };
+        div1.appendChild(d);
+        document.getElementById("_container2").appendChild(div1);
+        i++;
+    }
+    function deteFile(o) {
+        remove("div_"+o.id);
+        while (o.tagName != "DIV")
+        {
+            o = o.parentNode;
+        }
+        o.parentNode.removeChild(o);
+    }
+    function remove (id)
+    {
+        var idObject = document.getElementById(id);
+        if (idObject != null)
+            idObject.parentNode.removeChild(idObject);
+    }
+</script>
+{% endblock %}
+{% block body %}
+<form class="form-horizontal" role="form" method="POST">
+    {% csrf_token %}
+    <div class="col-md-10">
+        <div class="col-md-1"></div>
+        <div class="col-md-2">
+            <input type="button" value="点击添加" onclick="addRemark()" />
+        </div>
+    </div>
+    <div class="col-md-10"><br></div>
+    <div class="col-md-10">
+        <div class="form-group">
+            <div class="col-md-1"></div>
+            <div class="col-md-7 col-md-push-2"><font size="5" color="red">备注描述</font></div>
+            <div class="col-md-2"><font size="5" color="red">操作</font></div>
+        </div>
+    </div>
+    <div class="col-md-10">
+        <div class="form-group">
+            <div class="col-md-1"></div>
+            <div id="_container1" class="col-md-7"></div>
+            <div id="_container2" class="col-md-2"></div>
+        </div>
+    </div>
+    <div class="col-md-10">
+        <div class="form-group">
+            <span id="empty_lines"></span>
+        </div>
+        <script>
+           var url = "";
+            for(var i=0;i<2;i++) {
+                url += "<br />"
+            }
+            document.getElementById("empty_lines").innerHTML = url;
+        </script>
+    </div>
+    <div class="col-md-10" padding-top="10%">
+        <div class="form-group">
+            <div class="col-md-5"></div>
+            <div class="col-md-1">
+                <a class="btn btn-danger" href='/cmdb/remark&remark_date={{date}}/'>取消</a>
+            </div>
+            <div class="col-md-1">
+                <button type="submit" class="btn btn-primary">保存</button>
+            </div>
+        </div>
+    </div>
+</form>
+{% endblock %} 

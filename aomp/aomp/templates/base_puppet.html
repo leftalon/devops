@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block body_left %}
+<body class="easyui-layout">  
+    <div data-options="region:'north',border:false" style="height:60px;background:#B3DFDA;padding:10px">north region</div>
+    <div data-options="region:'west',split:true,title:'puppet配置管理'" style="width:250px;padding:10px;">
+        <ul id="tt1" class="easyui-tree" data-options="animate:true,dnd:true">  
+            <li>  
+                <span>Puppet</span>  
+                <ul>  
+                    <li data-options="state:'closed'">  
+                        <span>Node管理</span>  
+                        <ul>  
+                           {% for items in all_gamename %}
+                            <li data-options="state:'closed'">
+                                <span>{{items.game_name}}</span>
+                                <ul>
+                                   {% for group in all_gamegroup %}
+                                    <li data-options="state:'closed'">
+                                        <span>{{group.group_name}}</span>
+                                        <ul>
+                                            {% for node_message in all_puppetserver %}
+                                            {% if node_message.items_name == items.game_name and node_message.group_name == group.group_name %}
+                                            <li><a href="nid={{node_message.id}}">{{node_message.node_name}}</a></li>
+                                            {% endif %}
+                                            {% endfor %}
+                                        </ul>
+                                    </li>
+                                    {% endfor %}
+                                </ul>  
+                            </li>
+                            {% endfor %}
+                         </ul>  
+                     </li>  
+                   </ul>
+                    <ul>
+             </li>  
+         </ul>
+    </div>
+    <div data-options="region:'center'">
+    <br>
+    {% block puppet_body %}
+    {% endblock %}
+    </div>
+</body>  
+{% endblock %}

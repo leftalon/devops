@@ -1,0 +1,67 @@
+{% extends "base_salt.html" %}
+{% block salt_body %}
+<form class="form-inlinae" role="form" method="POST">
+    {% csrf_token %}
+    <p>
+    <h4>Command Views</h4>
+    </p>
+    <div class="row">
+        <div class="col-md-3">
+            <select name="saltitems" class="form-control">
+                    {% if saltitems %}
+                    <option>{{saltitems}}</option>
+                    {% endif %}
+                    {% if saltitems != "ALL" %}
+                    <option>ALL</option>
+                    {% endif %}
+                    {% for game in game_items_list %}
+                    {% if game != saltitems%}
+                    <option>{{game}}</option>
+                    {% endif %}
+                    {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-3">
+            <select name="saltgroup" class="form-control">
+                    {% if saltgroup %}
+                    <option>{{saltgroup}}</option>
+                    {% endif %}
+                    {% if saltgroup != "ALL" %}
+                    <option>ALL</option>
+                    {% endif %}
+                    {% for group in game_group_list %}
+                    <option>{{group}}</option>
+                    {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-2">
+            <select name="arg1" class="form-control">
+                    <option>{{arg1}}</option>
+                    {% for arg_1 in command_list %}
+                    {% if arg1 != arg_1 %}
+                    <option>{{arg_1}}</option>
+                    {% endif %}
+                    {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-3">
+            <input type="text" name="arg2" class="form-control" value="{{arg2}}">
+        </div>
+        <button type="submit" class="btn btn-primary">Execute</button>
+    </div>
+    <br>
+        <h4>Result</h4>
+    <div class="row">
+        {% if result %}
+        {% for k in result %}
+        {% for hostname,value in k.items %}
+        <ul>
+            <li><h5><font color="#58FA58">{{hostname}}</font></h5></li>
+            {{value|escape|linebreaks}}
+        </ul>
+        {% endfor %}
+        {% endfor %}
+        {% endif %}
+    </div>
+</form>
+{% endblock %}

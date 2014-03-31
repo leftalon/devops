@@ -1,0 +1,89 @@
+{% extends "base_puppet.html" %}
+{% block js %}
+<script>
+    {% for node_id in puppet_server_all %}
+    $(function ()
+    { $("#{{node_id.id}}").popover();
+      $("#{{node_id.id}}_left").popover({placement:'left'});
+      $("#{{node_id.id}}_top").popover({placement:'top'});
+      $("#{{node_id.id}}_bottom").popover({placement:'bottom'});
+    });
+    {% endfor %}
+
+    function delete_confirm() <!--调用方法-->
+    {
+            event.returnValue = confirm("删除是不可恢复的，你确认要删除吗？");
+        }
+</script>
+{% endblock %}
+{% block puppet_body %}
+    <form class="form-horizontal" role="form" method="get">
+        <div class="row">
+            <div class="col-md-3">
+                <input type="text" name="search_text" class="form-control" value={{search_text}}>
+            </div>
+            <div class="col-md-1">
+                <button type="submit" class="btn btn-primary">搜索</button>
+            </div>
+            <div class="col-md-2" style="float:right">
+            <a href="/puppet/host_config_add" type="button" class="btn btn-primary">添加机器配置</a>
+            </div>
+        </div>
+        <br>
+        <div class="row">
+            <div class="col-md-12">
+                   <table class="table table-bordered">
+                        <td align="center"><strong>Hostname</strong></td>
+                        <td align="center"><strong>IP</strong></td>
+                        <td align="center"><strong>items</strong></td>
+                        <td align="center"><strong>group</strong></td>
+                        <td align="center"><strong>node_pp</strong></td>
+                        <td align="center"><strong>opretaion</strong></td>
+                        <tr>
+                        {% for puppet_server in puppet_all_data %}
+                        <td align="center">{{puppet_server.node_name}}</td>
+                        <td align="center">
+                            {{ puppet_server.private_ip }}
+                            {{ puppet_server.public_ip }}
+                        </td>
+                        <td align="center">{{puppet_server.items_name}}</td>
+                        <td align="center">{{puppet_server.group_name}}</td>
+                        <td align="center"><a href="nid={{puppet_server.id}}">查看配置</a></td>
+                        <td align="center"><a type="button" class="btn btn-success" href="/puppet/update_node_id={{puppet_server.cmdb_id}}">更新</a> <a type="button" href="/puppet/delete_node_id={{puppet_server.id}}" class="btn btn-danger" onClick="return confirm('确定要删除{{puppet_server.node_name}}?')">删除</a></td>
+                        <tr>
+                        {% endfor %}
+                    </table>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="btn-group">
+                        {% if page_num == "all" %}
+                        <button name="page" type="submit" class="btn btn-info" value="all">all</button>
+                        {% else %}
+                        <button name="page" type="submit" class="btn btn-default" value="all">all</button>
+                        {% endif %}
+                        {% if first_page %}
+                        <button name="page" type="submit" class="btn btn-default" value="1">首页</button>
+                        {% endif %}
+                        {% if page_up %}
+                        <button name="page" type="submit" class="btn btn-default" value="{{page_num|add:-1}}">上一页</button>
+                        {% endif %}
+                        {% for page in page_list %}
+                        {% if page == page_num %}
+                        <button name="page" type="submit" class="btn btn-info" value="{{page}}">{{page}}</button>
+                        {% else %}
+                        <button name="page" type="submit" class="btn btn-default" value="{{page}}">{{page}}</button>
+                        {% endif %}
+                        {% endfor %}                                                                                                                                            
+                        {% if page_next %}
+                        <button name="page" type="submit" class="btn btn-default" value="{{page_num|add:1}}">下一页</button>
+                        {% endif %}
+                        {% if last_page %}
+                        <button name="page" type="submit" class="btn btn-default" value="{{last_page_value}}">尾页</button>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </form>
+{% endblock %}

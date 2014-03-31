@@ -1,0 +1,173 @@
+{% extends "base_body.html" %}
+{% block js %}
+<script>
+    {% for k,v in a_server.items %}
+    {% for s_m in v %}
+    $(function ()
+    { $("#{{s_m.0.id}}").popover();
+      $("#{{s_m.0.id}}_left").popover({placement:'left'});
+      $("#{{s_m.0.id}}_top").popover({placement:'top'});
+      $("#{{s_m.0.id}}_bottom").popover({placement:'bottom'});
+          });
+    {% endfor %}
+    {% endfor %}
+</script>
+<script>
+    {% for k,v in a_server.items %}
+    {% for s_m in v %}
+    $(function ()
+    {
+        var temp_arr = ("{{s_m.0.server_id}}").split('.');
+        if (temp_arr.length == 1) {
+            document.getElementById("{{s_m.0.server_id}}").innerHTML = temp_arr[0];
+        } else if (temp_arr.length == 3) {
+            document.getElementById("{{s_m.0.server_id}}").innerHTML = temp_arr[2];
+        } else if (temp_arr.length == 4) {
+            document.getElementById("{{s_m.0.server_id}}").innerHTML = temp_arr[2] + "." + temp_arr[3];
+        }
+    });
+    {% endfor %}
+    {% endfor %}
+</script>
+<script>
+$(document).ready(function() 
+    { 
+                $("#myTable").tablesorter(); 
+                    } 
+                    );
+</script>
+{% endblock %}
+{% block body %}
+<style>
+    th {
+    background-color:red;
+    }
+</style>
+<form class="form-horizontal" role="form" method="get">
+    <div class="col-md-12">
+        <div class="form-group">
+            <div class="col-md-4">
+                <h5>所有服务器:{{server_count}}台</h5>
+            </div>
+            <div class='col-md-4'>
+                <label for="inputgame_type" class="col-md-6 control-label">游戏平台</label>
+                <div class="col-md-6">
+                    <select name="game_type" class="form-control" id="inputgame_type">
+                        {% if game_type %}
+                        <option>{{game_type}}</option>
+                        {% if game_type != "none" %}
+                        <option>none</option>
+                        {% endif %}
+                        {% for gametype in all_gametype %}
+                        <option>{{gametype}}</option>
+                        {% endfor %}
+                        {% else %}
+                        <option>none</option>
+                        {% for gametype in all_gametype %}
+                        <option>{{gametype}}</option>
+                        {% endfor %}
+                        {% endif %}
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <input type="text" name="search_text" class="form-control" value={{search_text}}>
+            </div>
+            <div class="col-md-1">
+                <button type="submit" class="btn btn-primary">搜索</button>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-12">
+                <div class="table-responsive">
+                    <table id="myTable" valign="center" class="tablesorter table-striped table-bordered table-condensed" >
+                        <thead>
+                        <tr>
+                            <th align="center"><strong>主机类型</strong></th>
+                        <th>IP地址</th>
+                        <th>管理员</th>
+                        <th>机房</th>
+                        <th>项目</th>
+                        <th>服务器标示</th>
+                        <th>合服信息</th>
+                        <th>公司</th>
+                        <th>硬件信息</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                        {% for k,v in a_server.items %}
+                        {% for s_m in v %}
+                        {% if s_m.0.server_type == '云主机' %}
+                        <td align="center"><img src="/static/bootstrap/img/yun.png"></td>
+                        {% else %}
+                        <td align="center"><img src="/static/bootstrap/img/wu.png"></td>
+                        {% endif %}
+                        <td align="center">
+                        {% if k.0 != '0.0.0.0' %}
+                        内网:{{k.0}}
+                        <br>
+                        {% endif %}
+                        {% if k.1 != '0.0.0.0' %}
+                        外网:{{k.1}}
+                        {% endif %}
+                        </td>
+                        {% for admin in object_admin %}
+                        {% if admin.game_name == s_m.0.server_product %}
+                        <td align="center">{{admin.user_name}}</td>
+                        {% endif %}
+                        {% endfor %}
+                        <td align="center">{{s_m.0.server_idc}}</td>
+                        <td align="center">{{s_m.0.server_product}}</td>
+                        <td id="{{s_m.0.server_id}}" align="center">{{s_m.0.server_id}}</td>
+                        {% for ip,server in ip_server_dict.items %}
+                        {% if ip == k %}
+                        {% if server|length != 1 %}
+                        <td align="center"><a href="/cmdb/in_ip={{k.0}}&out_ip={{k.1}}" id="{{s_m.0.id}}" rel="popover" data-trigger="hover" title="合服信息" data-content="{{server}}" data-original-title="合服信息">合服:{{server|length}}</a></td>
+                        {% else %}
+                        <td align="center"><a href="/cmdb/in_ip={{k.0}}&out_ip={{k.1}}" id="{{s_m.0.id}}" rel="popover" data-trigger="hover" title="合服信息" data-content="{{server}}" data-original-title="合服信息">单服</a></td>
+                        {% endif %}
+                        {% endif %}
+                        {% endfor %}
+                        <td align="center">{{s_m.0.server_company}}</td>
+                        {% for template_id,v in template_all_dict.items %}
+                        {% if s_m.0.server_template_id == template_id %}
+                        <td align="center"><a href="#" id="{{s_m.0.id}}_left" rel="popover" data-trigger="hover" title="{{v.0}}" data-content="型号:{{v.1}} CPU:{{v.2}} 磁盘:{{v.3}} 内存:{{v.4}}">硬件信息</a></td>
+                        {% endif %}
+                        {% endfor %}
+                        {% endfor %}
+                        <tr>
+                        {%endfor%}
+                        </tr>
+                    </tbody>
+                    </table>
+                </div>
+                <div class="btn-group">
+                        {% if page_num == "all" %}
+                        <button name="page" type="submit" class="btn btn-info" value="all">all</button>
+                        {% else %}
+                        <button name="page" type="submit" class="btn btn-default" value="all">all</button>
+                        {% endif %}
+                        {% if first_page %}
+                        <button name="page" type="submit" class="btn btn-default" value="1">首页</button>
+                        {% endif %}
+                        {% if page_up %}
+                        <button name="page" type="submit" class="btn btn-default" value="{{page_num|add:-1}}">上一页</button>
+                        {% endif %}
+                        {% for page in page_list %}
+                        {% if page == page_num %}
+                        <button name="page" type="submit" class="btn btn-info" value="{{page}}">{{page}}</button>
+                        {% else %}
+                        <button name="page" type="submit" class="btn btn-default" value="{{page}}">{{page}}</button>
+                        {% endif %}
+                        {% endfor %}
+                        {% if page_next %}
+                        <button name="page" type="submit" class="btn btn-default" value="{{page_num|add:1}}">下一页</button>
+                        {% endif %}
+                        {% if last_page %}
+                        <button name="page" type="submit" class="btn btn-default" value="{{last_page_value}}">尾页</button>
+                        {% endif %}
+                    </div>
+        </div>
+    </form>
+        {% endblock %}

@@ -1,0 +1,24 @@
+{% extends "base_body.html" %}
+{% block body %}
+<form class="form-horizontal" role="form" method="get">
+    <div class="col-md-12">
+            <div class="table-responsive">
+                <table id="myTable" class="tablesorter table table-striped table-bordered table-condensed">
+                    <thead>
+                    <tr>
+                    <th>服务器组名称</th>
+                    <th>数量</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for s in server_groups %}
+                    <td align="center">{{s.group_name}}</td>
+                    <td align="center"></td>
+                    <tr>
+                    {%endfor%}
+                    </tbody>
+                </table>
+            </div>
+    </div>
+</form>
+{% endblock %} 

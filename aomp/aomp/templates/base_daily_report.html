@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block css %}
+<link rel='stylesheet' href='/static/bootstrap/css/daily_report.css' />
+{% endblock %}
+{% block body_left %}
+    <script>
+    $(document).ready(function() {
+        $(".next img").each(function() {
+            $(this).click(function() {
+                if($(this).attr('src') == '/static/bootstrap/img/round_add.png') {
+                    $(this).attr('src', '/static/bootstrap/img/round_remove.png')
+                } else if($(this).attr('src') == '/static/bootstrap/img/round_remove.png'){
+                    $(this).attr('src', '/static/bootstrap/img/round_add.png')
+                }
+            });
+        });
+    });
+    </script>
+    <div class="row">
+        <div class="col-md-2">
+            <div class="well">
+                {% for month in months_all %}
+                 <li><a href="#" class='next' data-toggle="collapse" data-target="#{{month.id}}"><img src='/static/bootstrap/img/round_add.png' /></a>{{month.year_month}}</li>
+                 <div id={{month.id}} class="collapse">
+                     {% for each in days_all %}
+                         {% if each.year_month == month.year_month %}
+                         <li class='second'><img src='/static/bootstrap/img/round_remove.png' /><a href='/daily_report/pageid={{each.id}}'>{{each.days}}</a></li>
+                         {% endif %}
+                         {% endfor %}
+                 </div>
+                 {% endfor %}
+             </div>
+        </div>
+        <div class="col-md-10">
+            {% block body %}
+            {% endblock %}
+        </div>
+    </div>
+{% endblock %}

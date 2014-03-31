@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <link href="/static/bootstrap/css/bootstrap.css" rel="stylesheet">
+        <link rel="stylesheet" href="/static/bootstrap/css/blue/style.css">
+        <link rel="stylesheet" href="/static/bootstrap/css/docs.css">
+        <link rel="stylesheet" href="/static/bootstrap/js/easyui/themes/default/easyui.css">
+        <link rel="stylesheet" href="/static/bootstrap/js/easyui/themes/icon.css">
+        <link href="/static/bootstrap/js/jqplot/dist/jquery.jqplot.min.css" rel="stylesheet">
+        <script type="text/javascript" src="/static/bootstrap/js/jquery.js"></script>
+        <script type="text/javascript" src="/static/bootstrap/js/easyui/jquery.easyui.min.js"></script>
+        <script type="text/javascript" src="/static/bootstrap/js/jqplot/dist/jquery.jqplot.min.js"></script>
+        <script type="text/javascript" src="/static/bootstrap/js/jqplot/dist/plugins/jqplot.pieRenderer.min.js"></script>
+        <script type="text/javascript" src="/static/bootstrap/js/jqplot/dist//plugins/jqplot.donutRenderer.min.js"></script>
+        <script type="text/javascript" src="/static/bootstrap/js/dropdown.js"></script>
+        <script type="text/javascript" src="/static/bootstrap/js/tooltip.js"></script>
+        <script type="text/javascript" src="/static/bootstrap/js/popover.js"></script>
+        <script type="text/javascript" src="/static/bootstrap/js/modal.js"></script>
+        <script type="text/javascript" src="/static/bootstrap/js/transition.js"></script>
+        <script type="text/javascript" src="/static/bootstrap/js/tab.js"></script>
+        <script type="text/javascript" src="/static/bootstrap/js/jquery.tablesorter.js"></script>
+        <script type="text/javascript" src="/static/bootstrap/js/bootstrap.js"></script>
+	<!-- Extras CSS -->
+  	<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+  	<!--[if lt IE 9]>
+    	<script src="/static/bootstrap/js/html5shiv.js"></script>
+    	<script src="/static/bootstrap/js/respond.min.js"></script>
+  	<![endif]-->
+  	<!-- Favicons -->
+        <title>cmdb</title>
+        <div class="row">
+            <div class="navbar navbar-inverse" role="banner">
+                <div class="col-md-2">
+                    <a class="navbar-brand" href="/cmdb/"><img src="/static/bootstrap/img/wu.png"></img>AOMP</a>
+                </div>
+                <div class="col-md-1">
+	    	        <a class="navbar" href="/cmdb/"><font color="white">CMDB</font></a>
+    	    	</div>
+                <div class="col-md-1">
+	    	        <a class="navbar" href="/salt_auto/minion"><font color="white">SALTSTACK</font></a>
+    	    	</div>
+                <div class="col-md-1">
+                    <a class="navbar" href="/puppet"><font color="white">PUPPET</font></a>
+    	    	</div>
+                <div class="col-md-1">
+                    <a class="navbar" href="/daily_report"><font color="white">日报系统</font></a>
+    	    	</div>
+                <div class="col-md-2"></div>
+                {% if user.is_authenticated %}
+                <div class="col-md-4">
+                    <div class="col-md-6 col-">
+                        <span class="navbar"><font color="white">欢迎用户{{user}}</font></span>
+                    </div>
+                    <div class="col-md-3">
+                        <a class="navbar" href="/logout"><font color="white">退出</font></a>
+                    </div>
+                    <div class="col-md-3">
+                        <a class="navbar" href="/cmdb/change_passwd"><font color="white">修改密码</font></a>
+                    </div>
+                </div>
+                {% else %}
+                <a class="navbar-right" href="/login">登录</a>
+                {%endif%}
+            </div>
+        </div>
+            {% block css %}
+            {% endblock %}
+            {% block js %}
+            {% endblock %}
+        </head>
+            {% block body_left %}
+            {% endblock %}
+</html>

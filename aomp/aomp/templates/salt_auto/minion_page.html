@@ -1,0 +1,127 @@
+{% extends "base_salt.html" %}
+{% block js %}
+<script type="text/javascript">
+    $(document).ready(function(){
+        var data = {{cmdb_saltaccept_unaccept_num|safe}};
+        var plot1 = jQuery.jqplot ('chart2', [data],
+            { 
+            title:'cmdb_total vs minion_accept vs minion_unaccept',
+            seriesDefaults: {
+            // Make this a pie chart.
+                renderer: jQuery.jqplot.PieRenderer, 
+                rendererOptions: {
+                    // Put data labels on the pie slices.
+                    // By default, labels show the percentage of the slice.
+                    showDataLabels: true
+                    }
+                }, 
+        legend: { show:true, location: 'e', }
+        });
+    });
+</script>
+{% endblock %}
+{% block salt_body %}
+<form class="form-horizontal" role="form" method="post">
+{% csrf_token %}
+<div class="row">
+    <ul class="nav nav-tabs">
+        <li class="active">
+            <a href="#gm" data-toggle="tab"><strong>Graph Message</strong></a>
+        </li>
+        <li>
+        <a href="#accept_key" data-toggle="tab"><strong>已认证的机器</strong></a>
+        </li>
+        <li>
+        <a href="#unaccept_key" data-toggle="tab"><strong>未认证的机器</strong></a>
+        </li>
+        <li>
+        <a href="#un_salt" data-toggle="tab"><strong>未安装salt的机器</strong></a>
+        </li>
+    </ul>
+</div>
+<br>
+<div class="tab-content">
+    <div class="tab-pane active" id="gm">
+        <div class="row">
+            <div class="col-md-6">
+                <div id="chart2"></div>
+            </div>
+        </div>   
+    </div> 
+    <div class="tab-pane" id="accept_key">
+        <div class="row">
+            <div class="col-md-3">
+                <button name="accept_host" type="submit" class="btn btn-danger" value="all">删除全部认证</button>
+            </div>
+        </div>
+        <br>
+        <div class="row">
+            <div class="col-md-6">
+            <table class="table table-bordered">
+                <td align="center"><strong>Fqdn</strong></td>
+                <td align="center"><strong>operation</strong></td>
+                <tr>
+                {% for accept_minion,minion_list in mionin_key_dict.items %}
+                {% if accept_minion == "minions" %}
+                {% for accept_fqdn in minion_list %}
+                <td align="center">{{accept_fqdn}}</td>
+                <td align="center"><button name="accept_host" type="submit" class="btn btn-danger" value={{accept_fqdn}}>删除Key</button></td>
+                <tr>
+                {% endfor %}
+                {% endif %}
+                {% endfor %}
+            </table>
+            </div>
+        </div>
+    </div>
+    <div class="tab-pane" id="unaccept_key">
+        <div class="row">
+            <div class="col-md-3">
+                <button name="unaccept_host" type="submit" class="btn btn-info" value="all">全部认证</button>
+            </div>
+        </div>
+        <br>
+        <div class="row">
+            <div class="col-md-6">
+            <table class="table table-bordered">
+                <td align="center"><strong>Fqdn</strong></td>
+                <td align="center"><strong>operation</strong></td>
+                <tr>
+                {% for unaccept_minion,minion_list in mionin_key_dict.items %}
+                {% if unaccept_minion == "minions_pre" %}
+                {% for unaccept_fqdn in minion_list %}
+                <td align="center">{{unaccept_fqdn}}</td>
+                <td align="center"><button name="unaccept_host" type="submit" class="btn btn-danger" value="{{unaccept_fqdn}}">认证Key</button></td>
+                <tr>
+                {% endfor %}
+                {% endif %}
+                {% endfor %}
+            </table>
+            </div>
+        </div>
+    </div>
+    <div class="tab-pane" id="un_salt">
+        <div class="row">
+            <div class="col-md-3">
+                <button name="un_salt" type="submit" class="btn btn-info" value="all">全部安装</button>
+            </div>
+        </div>
+        <br>
+        <div class="row">
+            <div class="col-md-6">
+            <table class="table table-bordered">
+                <td align="center"><strong>Fqdn</strong></td>
+                <td align="center"><strong>operation</strong></td>
+                <tr>
+                {% for un_salt in uninstall_salt %}
+                <td align="center">{{un_salt}}</td>
+                <td align="center"><button name="un_salt" type="submit" class="btn btn-danger" value="{{un_salt}}">安装Salt</button></td>
+                <tr>
+                {% endfor %}
+            </table>
+            </div>
+        </div>
+    </div>
+</div>
+</form>
+{% endblock %}

@@ -1,0 +1,48 @@
+{% extends "base_body.html" %}
+{% block body %}
+<form class="form-horizontal" role="form" method="POST">
+    {% csrf_token %}
+    <div class="col-md-10">
+        <div class="form-group">
+            <label for="inputremark_name" class="col-md-2 control-label">备注</label>
+            <div class="col-md-6">
+            <input type="text" name="remark_name" class="form-control" id="inputremark_name" value="{{remark.remark}}" />
+            </div>
+        </div>
+    </div>
+    <div class="col-md-10">
+        <div class="form-group">
+            <label for="inputremark_status" class="col-md-2 control-label">状态</label>
+            <div class="col-md-6">
+                <select name="status_name" class="form-control" id="inputstatus_name">
+                    <option>{{remark.status}}</option>
+                    {% for i in remark_status %}
+                    {% if i != remark.status %}
+                    <option>{{i}}</option>
+                    {% endif %}
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-10">
+        <div class="form-group">
+            <label for="inputoper_name" class="col-md-2 control-label">操作人</label>
+            <div class="col-md-6">
+            <input type="text" name="dealer_name" class="form-control" id="inputoper_name" value="{{remark.dealer_name}}" />
+            </div>
+        </div>
+    </div>
+    <div class="col-md-10">
+        <div class="form-group">
+            <div class="col-md-4"></div>
+            <div class="col-md-1">
+                <a class="btn btn-danger" href='/cmdb/remark&remark_date={{date}}'>取消</a>
+            </div>
+            <div class="col-md-1">
+                    <button type="submit" class="btn btn-primary">保存</button>
+            </div>
+        </div>
+    </div>
+</form>
+{% endblock %} 

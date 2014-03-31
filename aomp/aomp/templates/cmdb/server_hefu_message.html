@@ -1,0 +1,84 @@
+{% extends "base_body.html" %}
+{% block js %}
+<script>
+    {% for items in a_server %}
+    $(function ()
+    { $("#{{items.id}}").popover();
+      $("#{{items.id}}_left").popover({placement:'left'});
+      $("#{{items.id}}_top").popover({placement:'top'});
+      $("#{{items.id}}_bottom").popover({placement:'bottom'});
+          });
+          {% endfor %}
+</script>
+{% endblock %}
+{% block body %}
+<form class="form-horizontal" role="form" method="get">
+    <div class="col-md-12">
+        <div class="form-group">
+            <div class="col-md-6">
+                <a>合服情况:{{server_count}}台</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-12">
+                <div class="table-responsive">
+                    <table class="table table-striped table-bordered table-condensed">
+                        <td align="center">主机类型</td>
+                        <td align="center">状态</td>
+                        <td align="center">IP地址</td>
+                        <td align="center">管理员</td>
+                        <td align="center">机房</td>
+                        <td align="center">项目</td>
+                        <td align="center">标示</td>
+                        <td align="center">公司</td>
+                        <td align="center">硬件信息</td>
+                        <td align="center">修改</td>
+                        <!--td align="center">删除</td-->
+                        <tr>
+                        {% for items in a_server %}
+                        {% if items.server_type == '云主机' %}
+                        <td align="center"><img src="/static/bootstrap/img/yun.png"></td>
+                        {% else %}
+                        <td align="center"><img src="/static/bootstrap/img/wu.png"></td>
+                        {% endif %}
+                        {% if items.server_status == 'Line_On' %}
+                        <td align="center"><font color="green">On</font></td>
+                        {% elif items.server_status == 'Line_Ready' %}
+                        <td align="center"><font color="blue">Ready</font></td>
+                        {% elif items.server_status == 'Line_Off' %}
+                        <td align="center"><font color="red">Off</font></td>
+                        {% else %}
+                        <td align="center"><font color="red">Test</font></td>
+			            {% endif %}
+                        <td align="center">
+                        {% if items.server_in_ip %}
+                        内网:{{items.server_in_ip}}
+                        <br>
+                        {% endif %}
+                        {% if items.server_out_ip %}
+                        外网:{{items.server_out_ip}}
+                        {% endif %}
+			           </td>
+                       {% for admin in object_admin %}
+                       {% if admin.game_name == items.server_product %}
+                       <td align="center">{{admin.user_name}}</td>
+                       {% endif %}
+                       {% endfor %}
+                        <td align="center">{{items.server_idc}}</td>
+                        <td align="center">{{items.server_product}}</td>
+                        <td align="center">{{items.server_id}}</td>
+                        <td align="center">{{items.server_company}}</td>
+                        {% for template_id,v in template_all_dict.items %}
+                        {% if items.server_template_id == template_id %}
+                        <td align="center"><a href="#" id="{{items.id}}_left" rel="popover" data-trigger="hover" title="{{v.0}}" data-content="型号:{{v.1}} CPU:{{v.2}} 磁盘:{{v.3}} 内存:{{v.4}}">硬件信息</a></td>
+                        {% endif %}
+                        {% endfor %}
+                        <td align="center"><a href='/cmdb/server_edit&id={{items.id}}&server_product={{items.server_product}}' class="btn btn-info">编辑</a></td>
+                        <!--td align="center"><a href='/cmdb/one_server_del&id={{items.id}}&server_product={{items.server_product}}' class="btn btn-danger">删除</a></td-->
+                        <tr>
+                        {%endfor%}
+                    </table>
+                </div>
+        </div>
+    </form>
+        {% endblock %}

@@ -1,0 +1,66 @@
+{% extends "base_daily_report.html" %}
+{% block js %}
+<script type="text/javascript" src="/static/bootstrap/js/tinymce/tinymce.min.js"></script>
+<script>
+tinymce.init({
+            selector: "textarea",
+            theme: "modern",
+            language : "zh_CN",
+            plugins: ["advlist autolink lists link image charmap print preview hr anchor pagebreak",
+                      "searchreplace wordcount visualblocks visualchars code fullscreen",
+                      "insertdatetime media nonbreaking save table contextmenu directionality",
+                      "emoticons template paste textcolor"
+                      ],
+            image_advtab: true,
+            templates: [
+            {title: 'Test template 1', content: '<b>Test 1</b>'},
+            {title: 'Test template 2', content: '<em>Test 2</em>'}
+            ],
+            autosave_ask_before_unload: false
+            });
+    $(document).ready(function() {
+        $("#addReport").click(function() {
+            $(this).hide();
+            $("#reports").show();
+        });
+        $("#cancel").click(function() {
+            $("#reports").hide();
+            $("#addReport").show();
+        });
+    });
+</script>
+{% endblock %}
+{% block body %}
+     <div class="col-md-12">
+        <div class="col-md-12"><a href="#" id="addReport">为今天添加注释</a></div>
+    </div>
+        <form class="form-horizontal" role="form" method="post" id="reports" style="display:none">
+            {% csrf_token %}
+                <textarea class="form-control" name="comments" rows="5"></textarea>
+                <div class="form-group button-group">
+                    <div class="col-md-1">
+                        <a id="cancel" class="btn btn-danger">取消</a>
+                    </div>
+                    <div class="col-md-1">
+                        <button type="submit" class="btn btn-primary">发表</button>
+                    </div>
+                </div>
+        </form>
+    {% for each in reports_all %}
+    <div class="col-md-12">
+        {% if each.content %}
+            <div class="each">
+                <div class="col-md-12 title">
+                   <font color='blue'><b>{{each.name}}</b></font>添加了日报-{{each.time}}
+                   {% if user.username == each.spell %}
+                   <a href="/daily_report/edit/msgid={{each.id}}">编辑</a>
+                   {% endif %}
+                </div>
+                <div class="col-md-12 content">
+                    {{each.content|safe}}
+                </div>
+            </div>
+        {% endif %}
+    </div>
+    {% endfor %}
+{% endblock %}

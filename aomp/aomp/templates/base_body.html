@@ -1,0 +1,127 @@
+{% extends "base.html" %}
+{% block css %}
+<link rel="stylesheet" href="/static/bootstrap/css/cmdb.css" >
+{% endblock %}
+{% block body_left %}
+    <script>
+        $(document).ready(function() {
+            $("row a").each(function() {
+                var val = $(this).attr("href");
+                var s = encodeURI(val);
+                $(this).attr("href",s);
+            });
+            $('.next img').each(function() {
+                $(this).click(function() {
+                    if($(this).attr('src') == '/static/bootstrap/img/round_add.png') {
+                        $(this).attr('src', '/static/bootstrap/img/round_remove.png')
+                    } else if($(this).attr('src') == '/static/bootstrap/img/round_remove.png'){
+                        $(this).attr('src', '/static/bootstrap/img/round_add.png')
+                    }
+                });
+            });
+        });
+    </script>
+        <div class="row">
+            <div class="col-md-2">
+                <div class="well">
+                    <li><a href="#" class='next' data-toggle="collapse" data-target="#demo_z"><img src='/static/bootstrap/img/round_add.png' /></a>服务器列表管理</li>
+                        <div id="demo_z" class="collapse">
+                        <li class='first'><img src='/static/bootstrap/img/round_remove.png' /><a href='/cmdb/'>所有服务器</a></li>
+                        <li class='first'><a href="#" class='next' data-toggle="collapse" data-target="#demo1"><img src='/static/bootstrap/img/round_add.png' /></a>游戏分组</li>
+                        <div id="demo1" class="collapse">
+                            <li class="second"><a href="#" class='next' data-toggle="collapse" data-target="#hand_game"><img src='/static/bootstrap/img/round_add.png' /></a>手机游戏</li>
+                            <div id="hand_game" class="collapse">
+                            {% for gamename in all_gamename %}
+                            {% if gamename.game_type == "手机游戏平台" %}
+                            <li class='third'><img src='/static/bootstrap/img/round_remove.png' /><a href='/cmdb/server_product={{gamename}}'>{{gamename}}</a></li>
+                            {% endif %}
+                            {% endfor %}
+                            </div>
+                            <li class="second"><a href="#" class='next' data-toggle="collapse" data-target="#page_game"><img src='/static/bootstrap/img/round_add.png' /></a>网页游戏</li>
+                            <div id="page_game" class="collapse">
+                                {% for gamename in all_gamename %}
+                                {% if gamename.game_type == "网页游戏平台" %}
+                                <li class='third'><img src='/static/bootstrap/img/round_remove.png' /><a href='/cmdb/server_product={{gamename}}'>{{gamename}}</a></li>
+                                {% endif %}
+                                {% endfor %}
+                            </div>
+                            <li class="second"><a href="#" class='next' data-toggle="collapse" data-target="#other_game"><img src='/static/bootstrap/img/round_add.png' /></a>其他</li>
+                            <div id="other_game" class="collapse">
+                                {% for gamename in all_gamename %}
+                                {% if gamename.game_type != "手机游戏平台" %}
+                                {% if gamename.game_type != "网页游戏平台" %}
+                                {% if gamename.game_type != "PC游戏平台" %}
+                                <li class='third'><img src='/static/bootstrap/img/round_remove.png' /><a href='/cmdb/server_product={{gamename}}'>{{gamename}}</a></li>
+                                {% endif %}
+                                {% endif %}
+                                {% endif %}
+                                {% endfor %}
+                            </div>
+                            </div>
+                        <li class='first'><a href="#" class='next' data-toggle="collapse" data-target="#demo2"><img src='/static/bootstrap/img/round_add.png' /></a>平台分组</li>
+                            <div id="demo2" class="collapse">
+                                <li class="second"><img src='/static/bootstrap/img/round_remove.png' /><a href='/cmdb/server_company=腾讯开放平台'>腾讯开放平台</a></li>
+                                <li class="second"><img src='/static/bootstrap/img/round_remove.png' /><a href='/cmdb/server_company=腾讯云平台'>腾讯云平台</a></li>
+                                <li class="second"><img src='/static/bootstrap/img/round_remove.png' /><a href='/cmdb/server_company=HL'>HL</a></li>
+                            </div>
+                        <li class='first'><a href="#" class='next' data-toggle="collapse" data-target="#demo3"><img src='/static/bootstrap/img/round_add.png' /></a>地域分组</li>
+                            <div id="demo3" class="collapse">
+                            {% for idc in all_idc %}
+                            <li class="second"><img src='/static/bootstrap/img/round_remove.png' /><a href='/cmdb/server_idc={{idc}}'>{{idc}}</a></li>
+                            {% endfor %}
+                            </div>
+                        <li class='first'><a href="#" class='next' data-toggle="collapse" data-target="#demo4"><img src='/static/bootstrap/img/round_add.png' /></a>主机类型分组</li>
+                            <div id="demo4" class="collapse">
+                            {% for servertype in all_servertype %}
+                                <li class="second"><img src='/static/bootstrap/img/round_remove.png' /><a href='/cmdb/server_type={{servertype}}'>{{servertype}}</a></li>
+                                {% endfor %}
+                            </div>
+                        <li class='first'><img src='/static/bootstrap/img/round_remove.png' /><a href='/cmdb/admin_game'>游戏联系人对应表</a></li>
+                        <li class='first'><img src='/static/bootstrap/img/round_remove.png' /><a href='/cmdb/yunweizhiban'>一线运维值班表</a></li>
+                            </div>
+                            <li class="base_body"><a href="#" data-toggle="collapse" data-target="#demo5"><img src='/static/bootstrap/img/round_add.png' /></a>服务器组管理</li>
+                        <div id="demo5" class="collapse">
+                            <li class='first'><img src='/static/bootstrap/img/round_remove.png' /><a href='/cmdb/server_group'>服务器组</a></li>
+                            <li class='first'><img src='/static/bootstrap/img/round_remove.png' /><a href='/cmdb/server_group_add'>服务器组添加</a></li>
+                        </div>
+                        <li class="base_body"><a href="#" data-toggle="collapse" data-target="#template"><img src='/static/bootstrap/img/round_add.png' /></a>服务器模板管理</li>
+                        <div id="template" class="collapse">
+                            <li class='first'><img src='/static/bootstrap/img/round_remove.png' /><a href='/cmdb/template_show'>模板展示</a></li>
+                            {% if user.is_staff %}
+                            <li class='first'><img src='/static/bootstrap/img/round_remove.png' /><a href='/cmdb/template_add'>模板添加</a></li>
+                            {% endif %}
+                        </div>
+                        <li class="base_body"><a href="#" data-toggle="collapse" data-target="#ser"><img src='/static/bootstrap/img/round_add.png' /></a>服务器add/del管理</li>
+                        <div id="ser" class="collapse">
+                            <li class='first'><img src='/static/bootstrap/img/round_remove.png' /><a href='/cmdb/server_add'>单台添加</a></li>
+                            <li class='first'><img src='/static/bootstrap/img/round_remove.png' /><a href='/cmdb/server_many_add'>批量添加</a></li>
+                            <li class='first'><img src='/static/bootstrap/img/round_remove.png' /><a href='/cmdb/server_uploadfile_add'>Excel导入</a></li>
+                            <li class='first'><img src='/static/bootstrap/img/round_remove.png' /><a href='/cmdb/server_del'>批量删除</a></li>
+                        </div>
+                        <li class="base_body"><a href="#" data-toggle="collapse" data-target="#idc"><img src='/static/bootstrap/img/round_add.png' /></a>IDC列表管理</li>
+                        <div id="idc" class="collapse">
+                            <li class='first'><img src='/static/bootstrap/img/round_remove.png' /><a href='/cmdb/idc_all'>IDC列表</a></li>
+                            <li class='first'><img src='/static/bootstrap/img/round_remove.png' /><a href='/cmdb/idc_add'>添加IDC</a></li>
+                        </div>
+                        <li class="base_body"><a href="#" data-toggle="collapse" data-target="#game"><img src='/static/bootstrap/img/round_add.png' /></a>游戏列表管理</li>
+                        <div id="game" class="collapse">
+                            <li class='first'><img src='/static/bootstrap/img/round_remove.png' /><a href='/cmdb/game_all'>游戏列表</a></li>
+                            <li class='first'><img src='/static/bootstrap/img/round_remove.png' /><a href='/cmdb/game_add'>添加游戏</a></li>
+                        </div>
+                        <li class="base_body"><a href="#" data-toggle="collapse" data-target="#admin"><img src='/static/bootstrap/img/round_add.png' /></a>组用户管理</li>
+                        <div id="admin" class="collapse">
+                            <li class='first'><img src='/static/bootstrap/img/round_remove.png' /><a href='/cmdb/user_all'>组/用户列表</a></li>
+                            <li class='first'><img src='/static/bootstrap/img/round_remove.png' /><a href='/cmdb/user_add'>添加用户</a></li>
+                            <li class='first'><img src='/static/bootstrap/img/round_remove.png' /><a href='/cmdb/permission_builder'>权限生成表</a></li>
+                            {% if user.is_staff %}
+                            <li class='first'><img src='/static/bootstrap/img/round_remove.png' /><a href='/cmdb/reset_password'>重置用户密码</a></li>
+                            {% endif %}
+                        </div>
+            </div>
+        </div>
+        <div class="col-md-10">
+            {% block body %}
+            {% endblock %}
+        </div>
+    </div>
+    {% endblock %}

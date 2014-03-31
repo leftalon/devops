@@ -1,0 +1,49 @@
+{% extends "base_daily_report.html" %}
+{% block js %}
+<script type="text/javascript" src="/static/bootstrap/js/tinymce/tinymce.min.js"></script>
+<script>
+tinymce.init({
+            selector: "textarea",
+            theme: "modern",
+            language : "zh_CN",
+            plugins: ["advlist autolink lists link image charmap print preview hr anchor pagebreak",
+                      "searchreplace wordcount visualblocks visualchars code fullscreen",
+                      "insertdatetime media nonbreaking save table contextmenu directionality",
+                      "emoticons template paste textcolor"
+                      ],
+            image_advtab: true,
+            templates: [
+            {title: 'Test template 1', content: '<b>Test 1</b>'},
+            {title: 'Test template 2', content: '<em>Test 2</em>'}
+            ],
+            autosave_ask_before_unload: false
+            });
+    $(document).ready(function() {
+        $("#addReport").click(function() {
+            $(this).hide();
+            $("#reports").show();
+        });
+        $("#cancel").click(function() {
+            $("#reports").hide();
+            $("#addReport").show();
+        });
+    });
+</script>
+{% endblock %}
+{% block body %}
+    {% if message %}
+        {{message}}
+    {% endif %}
+        <form class="form-horizontal" role="form" method="post">
+            {% csrf_token %}
+                <textarea class="form-control" name="comments" rows="5">{{report.content}}</textarea>
+                <div class="form-group button-group">
+                    <div class="col-md-1">
+                        <a class="btn btn-danger" href="/daily_report">取消</a>
+                    </div>
+                    <div class="col-md-1">
+                        <button type="submit" class="btn btn-primary">发表</button>
+                    </div>
+                </div>
+        </form>
+{% endblock %}

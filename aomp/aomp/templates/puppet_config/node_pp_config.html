@@ -1,0 +1,20 @@
+{% extends "base_puppet.html" %}
+{% block puppet_body %}
+<div class="row">
+    <div class="col-md-1">
+        <a type="button" class="btn btn-info" href="/puppet">返回首页</a>
+    </div>
+</div>
+<br>
+<div class="row">
+    <div class="col-md-6">
+        {% for node_message in node_server_message %}
+        <pre>Node名称:{{node_message.node_name}}</pre>
+        <pre>Node File配置如下:</pre>
+        <pre>
+            {{node_message.node_file}}
+        </pre>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

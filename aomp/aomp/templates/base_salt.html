@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block body_left %}
+ <div class="row">
+     <div class="col-md-2" style="width:20%;margin-top:-30px;">
+        <ul class="nav nav-list bs-docs-sidenav">
+            <li><a type="button" href="/salt_auto/minion"><strong>Minion</strong><span style="float:right" class="glyphicon glyphicon-chevron-right"></span></a></li>
+            <li><a type="button" href="/salt_auto/command"><strong>Command</strong><span style="float:right" class="glyphicon glyphicon-chevron-right"></span></a></li>
+        </ul>
+    </div>
+    <div class="col-md-10" style="width:79%;">
+        {% block salt_body %}
+        {% endblock %}
+    </div>
+</div>
+{% endblock %}

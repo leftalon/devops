@@ -1,0 +1,321 @@
+{% extends "base_body.html" %}
+{% block body %}
+<form class="form-horizontal" role="form" method="get">
+    <div class="col-md-12">
+        <div class="col-md-4">
+            <div class="table-responsive">
+                <table class="table table-striped table-bordered table-condensed">
+                    <td align="center">白班时间</td>
+                    <td align="center">夜班时间</td>
+                    <td align="center">值班电话</td>
+                    <tr>
+                    <td align="center" class="danger">9:00---19:00</td>
+                    <td align="center" class="danger">19:00---9:00(次日)</td>
+                    <td align="center" class="danger">xxxxxxxxxxx</td>
+                    <tr>
+                </table>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <br />
+            <input type="text" name="search_date" class="form-control" placeholder="姓名" value={{search_date}}>
+        </div>
+        <div class="col-md-1">
+            <br>
+            <button type="submit" class="btn btn-primary">搜索</button>
+        </div>
+        <div class="col-md-2">
+            <br>
+            <a href='/cmdb/yunweizhiban_add' class="btn btn-info">添加运维值班信息</a>
+        </div>
+        <div class="col-md-2">
+            <br>
+            <a href='/cmdb/yunweizhiban_edit_mode' class="btn btn-info">编辑运维值班信息</a>
+        </div>
+    </div>
+    <div class="col-md-12">
+    <script type="text/javascript">
+var $ = function (id) {
+    return "string" == typeof id ? document.getElementById(id) : id;
+};
+
+var Class = {
+  create: function() {
+    return function() {
+      this.initialize.apply(this, arguments);
+    }
+  }
+}
+
+var Extend = function(destination, source) {
+    for (var property in source) {
+        destination[property] = source[property];
+    }
+    return destination;
+}
+
+
+var Calendar = Class.create();
+Calendar.prototype = {
+  initialize: function(container, options) {
+	this.Container = $(container);//容器(table结构)
+	this.Days = [];//日期对象列表
+	
+	this.SetOptions(options);
+	
+	this.Year = this.options.Year || new Date().getFullYear();
+	this.Month = this.options.Month || new Date().getMonth() + 1;
+	this.SelectDay = this.options.SelectDay ? new Date(this.options.SelectDay) : null;
+	this.onSelectDay = this.options.onSelectDay;
+	this.onToday = this.options.onToday;
+	this.onFinish = this.options.onFinish;	
+	
+	this.Draw();
+  },
+  //设置默认属性
+  SetOptions: function(options) {
+	this.options = {//默认值
+		Year:			0,//显示年
+		Month:			0,//显示月
+		SelectDay:		null,//选择日期
+		onSelectDay:	function(){},//在选择日期触发
+		onToday:		function(){},//在当天日期触发
+		onFinish:		function(){}//日历画完后触发
+	};
+	Extend(this.options, options || {});
+  },
+  //当前月
+  NowMonth: function() {
+	this.PreDraw(new Date());
+  },
+  //上一月
+  PreMonth: function() {
+	this.PreDraw(new Date(this.Year, this.Month - 2, 1));
+  },
+  //下一月
+  NextMonth: function() {
+	this.PreDraw(new Date(this.Year, this.Month, 1));
+  },
+  //上一年
+  PreYear: function() {
+	this.PreDraw(new Date(this.Year - 1, this.Month - 1, 1));
+  },
+  //下一年
+  NextYear: function() {
+	this.PreDraw(new Date(this.Year + 1, this.Month - 1, 1));
+  },
+  //根据日期画日历
+  PreDraw: function(date) {
+	//再设置属性
+	this.Year = date.getFullYear(); this.Month = date.getMonth() + 1;
+	//重新画日历
+	this.Draw();
+  },
+  //画日历
+  Draw: function() {
+	//用来保存日期列表
+	var arr = [];
+        var day_shift = new Array();
+        var night_shift = new Array();
+        var temp = [];
+        var id = [];
+	//用当月第一天在一周中的日期值作为当月离第一天的天数
+	for(var i = 1, firstDay = new Date(this.Year, this.Month - 1, 1).getDay(); i <= firstDay; i++){ arr.push(0); }
+	//用当月最后一天在一个月中的日期值作为当月的天数
+	for(var i = 1, monthDay = new Date(this.Year, this.Month, 0).getDate(); i <= monthDay; i++){ arr.push(i); }
+	//清空原来的日期对象列表
+	this.Days = [];
+	//插入日期
+	var frag = document.createDocumentFragment();
+        for(var i=0;i<arr.length;i++) {
+            var Found = false;
+            if(arr[i] > 0) {
+                {% for i in yunweizhiban %}
+                temp = "{{i.zhiban_day}}".split('-');
+                if((temp[0] == this.Year) && (temp[1] == this.Month) && (temp[2] == arr[i])){
+                    if("{{i.baiban_name}}") {
+                        day_shift.push("{{i.baiban_name}}");
+                    } else {
+                        day_shift.push("无");
+                    }
+                    if("{{i.yeban_name}}") {
+                        night_shift.push("{{i.yeban_name}}");
+                    } else {
+                        night_shift.push("无");
+                    }
+                    if("{{i.baiban_name}}" || "{{i.yeban_name}}") {
+                        id.push("{{i.id}}");
+                    } else {
+                        id.push(0);
+                    }
+                    Found = true;
+                }
+                {% endfor %}
+                if(!Found) {
+                    id.push(0);
+                    day_shift.push("无");
+                    night_shift.push("无");
+                }
+            }
+        }
+	while(arr.length){
+		//每个星期插入一个tr
+		var row = document.createElement("tr");
+		//每个星期有7天
+		for(var i = 1; i <= 7; i++){
+			var cell = document.createElement("td");
+                        cell.className = "cell";
+                        //cell.setAttribute("style","width:10%;");
+                        //cell.setAttribute("style","height:100px;");
+			cell.innerHTML = "&nbsp;";
+			if(arr.length){
+				var d = arr.shift();
+				if(d){
+                                        var day = day_shift.shift();
+                                        var night = night_shift.shift();
+                                        var id_value = id.shift();
+                                        if (this.Month < 10) {
+                                            var temp_Month = "0" + this.Month;
+                                        } else {
+                                            var temp_Month = this.Month;
+                                        }
+                                        if (d < 10) {
+                                            var temp_Day = "0" + d;
+                                        } else {
+                                            var temp_Day = d;
+                                        }
+                                        var url = "";
+                                        var d_day = String(this.Year) + temp_Month + temp_Day;
+                                        var hasRemark = false;
+                                        {% for i in days %}
+                                            if (d_day == "{{i}}") {
+                                                hasRemark = true;
+                                            }
+                                        {% endfor %}
+                                        if(day == "无" && night == "无") {
+                                            url = "<a href=\"/cmdb/remark&remark_date=" + d_day + "/\">" + d + "<br /><br />";
+                                        } else {
+                                            url = "<a href=\"/cmdb/remark&remark_date=" + d_day + "/\">" + d +"<br />" + day +"/" + night + "<br />";
+                                        }
+                                        if(hasRemark) {
+                                            url += "<img src=\"/static/bootstrap/img/remark.jpg\"></img></a>";
+                                        } else {
+                                            url += "</a>";
+                                        }
+                                        cell.innerHTML = url;
+                                        cell.align = "center";
+					this.Days[d] = cell;
+					var on = new Date(this.Year, this.Month - 1, d);
+					//判断是否今日
+					if(this.IsSame(on, new Date())){
+                                            cell.style.background = "#FFA500";
+                                        }
+					//判断是否选择日期
+					this.SelectDay && this.IsSame(on, this.SelectDay) && this.onSelectDay(cell);
+				}
+			}
+			row.appendChild(cell);
+		}
+		frag.appendChild(row);
+	}
+	//先清空内容再插入(ie的table不能用innerHTML)
+	while(this.Container.hasChildNodes()){ this.Container.removeChild(this.Container.firstChild); }
+	this.Container.appendChild(frag);
+	//附加程序
+	this.onFinish();
+  },
+  //判断是否同一日
+  IsSame: function(d1, d2) {
+	return (d1.getFullYear() == d2.getFullYear() && d1.getMonth() == d2.getMonth() && d1.getDate() == d2.getDate());
+  } 
+}
+</script>
+<style type="text/css">
+.cell a { display:block; width:100%; height:100%; background:#FDF5E6}
+.cell a:hover { background:#FFFFFF; color:#FF0000; text-decoration:none}
+
+.Calendar {
+	font-family:Verdana;
+	font-size:20px;
+	align:center;
+	width:100%;
+	height:100%;
+	padding-left:5%;
+        padding-right:5%;
+	line-height:1.5em;
+}
+.Calendar a{
+	color:#1e5494;
+}
+
+.Calendar table{
+	width:100%; 
+	border:0;
+}
+
+.Calendar table thead{color:#acacac;}
+
+.Calendar table td {
+	font-size: 15px;
+        width: 100px;
+        height: 100px;
+}
+#idCalendarPre{
+	cursor:pointer;
+	float:left;
+	padding-left:20%;
+}
+#idCalendarNext{
+	cursor:pointer;
+	float:right;
+	padding-right:30%;
+}
+#idCalendar td.onToday {
+	font-weight:bold;
+	color:#FF0000;
+}
+#idCalendar td.onSelect {
+	font-weight:bold;
+}
+</style>
+        <div class="Calendar">
+        <div>
+            <div id="idCalendarPre">&lt;&lt;</div>
+            <div id="idCalendarNext">&gt;&gt;</div>
+            <span id="idCalendarYear" style= "margin-left:14%;"></span>  年  <span id="idCalendarMonth"></span>月
+        </div>
+  <table cellspacing="0">
+    <thead>
+      <tr>
+        <td align="center"><font color="red" size=5>日</font></td>
+        <td align="center"><font color="red" size=5>一</font></td>
+        <td align="center"><font color="red" size=5>二</font></td>
+        <td align="center"><font color="red" size=5>三</font></td>
+        <td align="center"><font color="red" size=5>四</font></td>
+        <td align="center"><font color="red" size=5>五</font></td>
+        <td align="center"><font color="red" size=5>六</font></td>
+      </tr>
+    </thead>
+    <tbody id="idCalendar">
+    </tbody>
+    <hr />
+  </table>
+</div>
+
+<script language="JavaScript">
+var cale = new Calendar("idCalendar", {
+	SelectDay: new Date().setDate(0),
+	onSelectDay: function(o){ o.className = "onSelect"; },
+	onToday: function(o){ o.className = "onToday"; },
+	onFinish: function(){
+		$("idCalendarYear").innerHTML = this.Year; $("idCalendarMonth").innerHTML = this.Month;
+	}
+});
+
+$("idCalendarPre").onclick = function(){ cale.PreMonth(); }
+$("idCalendarNext").onclick = function(){ cale.NextMonth(); }
+
+</script>
+    </div>
+</form>
+{% endblock %} 

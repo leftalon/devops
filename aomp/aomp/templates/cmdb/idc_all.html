@@ -1,0 +1,74 @@
+{% extends "base_body.html" %}
+{% block js %}
+<script>
+      $(function () {
+        $('#myTab a:last').tab('show')
+        })
+</script>
+{% endblock %}
+{% block body %}
+    <div class="col-md-12">
+        <div class="tabbable" id="myTab">
+            <ul class="nav nav-tabs">
+                <li class="active">
+                <a href="#{{company_list.0}}" data-toggle="tab">{{company_list.0}}</a>
+                </li>
+                {% for company in company_list %}
+                {% if company != company_list.0 %}
+                <li>
+                <a href="#{{company}}" data-toggle="tab">{{company}}</a>
+                </li>
+                {% endif %}
+                {% endfor %}
+            </ul>
+            <br>
+            <div class="tab-content">
+                    {% for idc_company,idc_message in idc_all_name.items %}
+                    {% if idc_company == company_list.0 %}
+                    <div class="tab-pane fade active in" id="{{idc_company}}">
+                    <table class="table table-striped table-bordered table-condensed">
+                        <td align="center"><a>IDC名称</a></td>
+                        <td align="center"><a>IDC名称简写</a></td>
+                        <td align="center"><a>IDC地址</a></td>
+                        <td align="center"><a>IDC联系人</a></td>
+                        <td align="center"><a>IDC联系人电话</a></td>
+                        <td align="center"><a>编辑</a></td>
+                        <tr>
+                        {% for message in idc_message %}
+                        <td align="center">{{message.idc_name}}</td>
+                        <td align="center">{{message.idc_scode}}</td>
+                        <td align="center">{{message.idc_address}}</td>
+                        <td align="center">{{message.idc_contact}}</td>
+                        <td align="center">{{message.idc_phone}}</td>
+                        <td align="center"><a href="/cmdb/idc_edit&id={{message.id}}" class="btn btn-info">编辑</a></td>
+                        <tr>
+                        {% endfor %}
+                    </table>
+                    </div>
+                    {% else %}
+                    <div class="tab-pane" id="{{idc_company}}">
+                    <table class="table table-striped table-bordered table-condensed">
+                        <td align="center"><a>IDC名称</a></td>
+                        <td align="center"><a>IDC名称简写</a></td>
+                        <td align="center"><a>IDC地址</a></td>
+                        <td align="center"><a>IDC联系人</a></td>
+                        <td align="center"><a>IDC联系人电话</a></td>
+                        <td align="center"><a>编辑</a></td>
+                        <tr>
+                        {% for message in idc_message %}
+                        <td align="center">{{message.idc_name}}</td>
+                        <td align="center">{{message.idc_scode}}</td>
+                        <td align="center">{{message.idc_address}}</td>
+                        <td align="center">{{message.idc_contact}}</td>
+                        <td align="center">{{message.idc_phone}}</td>
+                        <td align="center"><a href="/cmdb/idc_edit&id={{message.id}}" class="btn btn-info">编辑</a></td>
+                        <tr>
+                        {% endfor %}
+                    </table>
+                    </div>
+                    {% endif %}
+                    {% endfor %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

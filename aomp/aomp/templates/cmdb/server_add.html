@@ -1,0 +1,261 @@
+{% extends "base_body.html" %}
+{% block body %}
+    <link type="text/css" rel="stylesheet" href="/static/bootstrap/css/calendar.css" >
+    <script type="text/javascript" src="/static/bootstrap/js/calendar.js" ></script>
+    <script type="text/javascript" src="/static/bootstrap/js/calendar-zh.js" ></script>
+    <script type="text/javascript" src="/static/bootstrap/js/calendar-setup.js"></script>
+    <script type="text/javascript" src="/static/bootstrap/js/checkform.js"></script>
+    <script>
+        function select() {
+            var company_idc_mapping = new Array();
+            {% for k,v in company_idc_dict.items %}
+                var group = new Object();
+                group.company = "{{k}}";
+                {% for each in v %}
+                    if(!group.idc) {
+                        group.idc = "{{each}}";
+                    } else {
+                        group.idc += "|" + "{{each}}";
+                    }
+                {% endfor %}
+                company_idc_mapping.push(group);
+            {% endfor %}
+            var sel = document.getElementById("inputidc_company");
+            var selvalue = sel.options[sel.options.selectedIndex].value
+            for(var i=0;i<company_idc_mapping.length;i++) {
+                if(company_idc_mapping[i].company == selvalue) {
+                    var idc_list = company_idc_mapping[i].idc.split('|');
+                    for(var j=0;j<idc_list.length;j++) {
+                        document.getElementById("inputserver_idc").length = idc_list.length;
+                        document.getElementById("inputserver_idc").options[j].text = idc_list[j];
+                        document.getElementById("inputserver_idc").options[j].value = idc_list[j];
+                    }
+                }
+            }
+        }
+    </script>
+    <form class="form-horizontal" role="form" onsubmit='return check_form(this);' id='add_server' method="post">
+        {% csrf_token %}
+        {% if message %}
+            <div class = "col-md-12">
+                <strong><font color="red">{{message}}</font></strong>
+            </div>
+        {% endif %}
+    <div class="col-md-12">
+        <div class="form-group">
+            <label for="inputserver_id" class="col-md-3 control-label"><font color="red">*</font>服务器标示</label>
+            <div class="col-md-4">
+                <input type="text" name="server_id" class="form-control" id="inputserver_id" placeholder="game.s5" value={{server_id}}>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-12">
+        <div class="form-group">
+        <label for="inputserver_in_ip" class="col-md-3 control-label">内网ip地址</label>
+            <div class="col-md-4">
+                <input type="text" name="server_in_ip" class="form-control" id="inputserver_in_ip" value={{server_in_ip}}>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-12">
+        <div class="form-group">
+        <label for="inputserver_out_ip" class="col-md-3 control-label">外网ip地址</label>
+            <div class="col-md-4">
+                <input type="text" name="server_out_ip" class="form-control" id="inputserver_out_ip" value={{server_out_ip}}>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-12">
+        <div class="form-group">
+            <label for="inputserver_type" class="col-md-3 control-label">主机类型</label>
+            <div class="col-md-4">
+                <select name="server_type" class="form-control" id="inputserver_type">
+                    {% if server_type %}
+                    <option>{{server_type}}</option>
+                    {% for s_type in typeall %}
+                    {% if s_type.server_type_name != server_type %}
+                    <option>{{s_type}}</option>
+                    {% endif %}
+                    {% endfor %}
+                    {% else %}
+                    {% for s_type in typeall %}
+                    <option>{{s_type}}</option>
+                    {% endfor %}
+                    {% endif %}
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-12">
+        <div class="form-group">
+        <label for="inputserver_template" class="col-md-3 control-label">服务器模板</label>
+            <div class="col-md-4">
+                <select name="server_template" class="form-control" id="inputserver_template">
+                    {% if server_template %}
+                    <option>{{server_template}}</option>
+                    {% for template in templateall %}
+                    {% if template.template_name != template_name %}
+                    <option>{{template.template_name}}({{template.template_model}},{{template.template_cpu}},{{template.template_mem}},{{template.template_disk}})</option>
+                    {% endif %}
+                    {% endfor %}
+                    {% else %}
+                    {% for template in templateall %}
+                    <option>{{template.template_name}}({{template.template_model}},{{template.template_cpu}},{{template.template_mem}},{{template.template_disk}})</option>
+                    {% endfor %}
+                    {% endif %}
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-12">
+        <div class="form-group">
+        <label for="inputidc_company" class="col-md-3 control-label">IDC所属公司</label>
+            <div class="col-md-4">
+                    <select name="idc_company" class="form-control" id="inputidc_company" onChange = select()>
+                        {% if server_idc_company %}
+                        <option>{{server_idc_company}}</option>
+                        {% for company_name in company_list %}
+                        {% if company_name != server_idc_company %}
+                        <option>{{company_name}}</option>
+                        {% endif %}
+                        {%endfor%}
+                        {% else %}
+                        {% for company_name in company_list %}
+                        <option>{{company_name}}</option>
+                        {%endfor%}
+                        {% endif %}
+                    </select>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-12">
+        <div class="form-group">
+        <label for="inputserver_idc" class="col-md-3 control-label">服务器IDC</label>
+            <div class="col-md-4">
+                    <select name="server_idc" class="form-control" id="inputserver_idc">
+                        {% if server_idc %}
+                        <option>{{server_idc}}</option>
+                        {% for idc in default_idc %}
+                        {% if idc != server_idc %}
+                        <option>{{idc}}</option>
+                        {% endif %}
+                        {% endfor %}
+                        {% else %}
+                        {% for idc in default_idc %}
+                        <option>{{idc}}</option>
+                        {% endfor %}
+                        {% endif %}
+                    </select>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-12">
+        <div class="form-group">
+        <label for="inputserver_company" class="col-md-3 control-label">服务器平台</label>
+            <div class="col-md-4">
+                    <select name="server_company" class="form-control" id="inputserver_company">
+                        {% if server_company %}
+                        <option>{{server_company}}</option>
+                        {% for platform in companyall %}
+                        {% if platform.platform_name != server_company %}
+                        <option>{{platform}}</option>
+                        {% endif %}
+                        {% endfor %}
+                        {% else %}
+                        {% for platform in companyall %}
+                        <option>{{platform}}</option>
+                        {%endfor%}
+                        {% endif %}
+                    </select>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-12">
+        <div class="form-group">
+        <label for="inputserver_product" class="col-md-3 control-label">服务器产品</label>
+            <div class="col-md-4">
+                    <select name="server_product" class="form-control" id="inputserver_product">
+                        {% if server_product %}
+                        <option>{{server_product}}</option>
+                        {% for game in gameall %}
+                        {% if game != server_product %}
+                        <option>{{game}}</option>
+                        {% endif %}
+                        {% endfor %}
+                        {% else %}
+                        {% for game in gameall %}
+                        <option>{{game}}</option>
+                        {% endfor %}
+                        {% endif %}
+                    </select>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-12">
+        <div class="form-group">
+        <label for="inputserver_group" class="col-md-3 control-label">服务器属组</label>
+            <div class="col-md-4">
+                    <select name="server_group" class="form-control" id="inputserver_group">
+                        {% for s in server_groups %}
+                        <option>{{s}}</option>
+                        {% endfor %}
+                    </select>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-12">
+        <div class="form-group">
+        <label for="inputserver_status" class="col-md-3 control-label">服务器状态</label>
+            <div class="col-md-4">
+                <select name="server_status" class="form-control" id="inputserver_status">
+                    {% if server_status %}
+                    <option>{{server_status}}</option>
+                    {% for s_status in server_line_status %}
+                    {% if s_status != server_status %}
+                    <option>{{s_status}}</option>
+                    {% endif %}
+                    {% endfor %}
+                    {% else %}
+                    {% for s_status in server_line_status %}
+                    <option>{{s_status}}</option>
+                    {%endfor%}
+                    {% endif %}
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-12">
+        <div class="form-group">
+        <label for="server_start_date" class="col-md-3 control-label">开始时间</label>
+            <div class="col-md-4">
+                <input type="text" id="server_start_date" name="server_start_date" class="form-control" onclick="return showCalendar('server_start_date', 'y-mm-dd');" value={{server_start_date}}>
+            </div>
+        </div>
+    </div>
+    <script>
+        if(document.getElementById("server_start_date").value == "") {
+            var myDate = new Date();
+            var tempMonth = (myDate.getMonth() + 1 < 10) ? "0" + (myDate.getMonth() + 1) : (myDate.getMonth() + 1);
+            var tempDay = myDate.getDate() < 10 ? "0" + myDate.getDate() : myDate.getDate();
+            document.getElementById("server_start_date").value = myDate.getFullYear() + '-' + tempMonth + '-' + tempDay;
+        }
+    </script>
+  
+    <div class="col-md-12">
+        <div class="form-group">
+            <div class="col-md-4"></div>
+            <div class="col-md-1">
+                <a class="btn btn-danger" href='/cmdb/'>取消</a>
+            </div>
+            <div class="col-md-1">
+                    <button type="submit" class="btn btn-primary">添加</button>
+            </div>
+        </div>
+    </div>
+</div>
+</form>
+{% endblock %}
+
