@@ -69,8 +69,11 @@ class API_Init:
             data = json.dumps(self.body)
         else:
             data = self.body
+        #通过body等信息得到orignal
         self.orignal = "body=%s&method=%s&uri=%s&x-txc-cloud-secretid=%s&x-txc-cloud-nonce=%s&x-txc-cloud-timestamp=%s" %(data,self.method,self.uri,self.secretID,self.nonce,self.timestr)
+        #加密api签名
         self.sign = base64.b64encode(hmac.new(self.secretKEY,self.orignal,digestmod=hashlib.sha1).digest())
+        #访问必带的header信息
         header_data = {
                 "x-txc-cloud-secretid":self.secretID,
                 "x-txc-cloud-nonce":self.nonce,
